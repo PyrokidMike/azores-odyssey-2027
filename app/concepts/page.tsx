@@ -15,7 +15,7 @@ export default function ConceptsPage() {
       <PageHeader
         eyebrow="Shape the itinerary"
         title="Island Concepts"
-        intro="Four ways to structure the trip, from a single deep island to an ambitious multi-island expedition. Each adds experiences but also transfer days — vote for the shape you want."
+        intro="Four ways to structure the trip, from a single deep island to an ambitious multi-island expedition. Each adds experiences but also transfer days. Voting here is the same as the Island concept decision, and stays in this browser only."
       />
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <div className="grid gap-6">

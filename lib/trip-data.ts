@@ -73,6 +73,8 @@ export interface DecisionOption {
   id: string
   label: string
   detail?: string
+  /** Optional shared vote id so a decision option can reuse another item's votes. */
+  voteId?: string
 }
 
 export interface Decision {
@@ -126,8 +128,10 @@ export const DECISIONS: Decision[] = [
     title: 'Trip length',
     question: 'How many nights?',
     notes:
-      '11 nights should prioritize São Miguel or São Miguel + one second island. 13 nights can responsibly support a deeper second island, or a more ambitious expedition.',
+      '5–7 nights keep us on a single island (São Miguel). 11 nights should prioritize São Miguel or São Miguel + one second island. 13 nights can responsibly support a deeper second island, or a more ambitious expedition.',
     options: [
+      { id: '5', label: '5 nights', detail: 'Short single-island trip — São Miguel only' },
+      { id: '7', label: '7 nights', detail: 'A relaxed São Miguel week with breathing room' },
       { id: '11', label: '11 nights', detail: 'São Miguel or São Miguel + one second island' },
       { id: '13', label: '13 nights', detail: 'Supports a deeper second island or expedition' },
     ],
@@ -142,6 +146,39 @@ export const DECISIONS: Decision[] = [
       { id: 'committed', label: 'I am committed to climbing' },
       { id: 'might', label: 'I might climb' },
       { id: 'no', label: 'I will not climb' },
+    ],
+  },
+  {
+    id: 'island-concept',
+    title: 'Island concept',
+    question: 'Which island concept should we build the trip around?',
+    notes:
+      'This is the itinerary’s backbone — it sets how many transfer days we accept and which signature experiences are on the table. See the Island Concepts page for the full detail; votes here and there are the same.',
+    options: [
+      {
+        id: 'saomiguel-only',
+        voteId: 'concept:saomiguel-only',
+        label: 'São Miguel only',
+        detail: 'Maximum variety, least transfer friction',
+      },
+      {
+        id: 'saomiguel-terceira',
+        voteId: 'concept:saomiguel-terceira',
+        label: 'São Miguel + Terceira',
+        detail: 'Adds caves, Angra, and the Sanjoaninas festival',
+      },
+      {
+        id: 'saomiguel-faialpico',
+        voteId: 'concept:saomiguel-faialpico',
+        label: 'São Miguel + Faial/Pico',
+        detail: 'Adds Capelinhos, UNESCO vineyards, and Mount Pico',
+      },
+      {
+        id: 'maximum-expedition',
+        voteId: 'concept:maximum-expedition',
+        label: 'Maximum expedition',
+        detail: 'All four islands — responsible only at 13 nights',
+      },
     ],
   },
   {

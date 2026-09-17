@@ -69,11 +69,11 @@ export function VoteControls({
           )
         })}
       </div>
-      {total > 0 && (
-        <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
-          {total} {total === 1 ? 'vote' : 'votes'} in this browser
-        </p>
-      )}
+      <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
+        {total > 0
+          ? `${total} ${total === 1 ? 'vote' : 'votes'} saved on this device only`
+          : 'Prototype — votes are saved on this device only'}
+      </p>
     </div>
   )
 }

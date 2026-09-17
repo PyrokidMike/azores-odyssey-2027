@@ -14,7 +14,7 @@ export default function ActivitiesPage() {
       <PageHeader
         eyebrow="Explore & vote"
         title="Activity Explorer"
-        intro="Every option is hand-researched with group-fit notes, booking urgency, and a research status. Filter to what fits, then vote and leave comments."
+        intro="Every option is hand-curated with island, whole-group vs. split-group fit, intensity, booking urgency, a critical note, and a direct source link. Filter to what fits, then vote and comment — your picks stay in this browser only."
       />
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <ActivityExplorer />

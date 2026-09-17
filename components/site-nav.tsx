@@ -13,7 +13,7 @@ const NAV = [
   { href: '/decisions', label: 'Group Decisions' },
   { href: '/activities', label: 'Activity Explorer' },
   { href: '/concepts', label: 'Island Concepts' },
-  { href: '/results', label: 'Results' },
+  { href: '/results', label: 'Admin Dashboard' },
   { href: '/accommodation', label: 'Accommodation' },
 ]
 

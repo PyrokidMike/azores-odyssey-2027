@@ -7,11 +7,9 @@ import { usePlanning } from '@/components/planning-provider'
 import {
   ACTIVITIES,
   DECISIONS,
-  ISLAND_CONCEPTS,
   VOTE_OPTIONS,
   type VoteValue,
   activityVoteId,
-  conceptVoteId,
   decisionOptionVoteId,
 } from '@/lib/trip-data'
 import { cn } from '@/lib/utils'
@@ -164,12 +162,6 @@ export function ResultsView() {
     })),
   )
 
-  const conceptItems = ISLAND_CONCEPTS.map((c) => ({
-    id: conceptVoteId(c.id),
-    label: c.title,
-    votes: getVotes(conceptVoteId(c.id)),
-  }))
-
   const activityItems = ACTIVITIES.map((a) => ({
     id: activityVoteId(a.id),
     label: a.name,
@@ -180,19 +172,17 @@ export function ResultsView() {
   return (
     <div>
       <div className="rounded-2xl border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-foreground/80">
-        Tallies reflect votes saved in <strong>this browser</strong>. Each person&apos;s name
-        counts once per item, so share the room on your own devices to build a complete picture.
+        <strong>Admin view — prototype.</strong> These tallies only reflect votes saved in{' '}
+        <strong>this browser</strong>. Family votes and comments are private to each person&apos;s
+        device and are <strong>not shared or combined yet</strong>. A real shared tally will arrive
+        with the Supabase backend.
       </div>
 
       <Section
         title="Group decisions"
-        desc="Ranked by net score across every option. Higher is stronger group support."
+        desc="Ranked by net score across every option. Higher is stronger group support. Island concept votes are included here."
       >
         <RankedList items={decisionItems} />
-      </Section>
-
-      <Section title="Island concepts" desc="Which itinerary shape the group is leaning toward.">
-        <RankedList items={conceptItems} />
       </Section>
 
       <Section title="Activities" desc="Every activity ranked by enthusiasm. Skips and no-thanks pull the score down.">

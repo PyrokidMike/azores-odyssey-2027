@@ -35,7 +35,7 @@ export function DecisionCard({ decision }: { decision: Decision }) {
                 <p className="mt-0.5 text-sm text-muted-foreground">{opt.detail}</p>
               )}
             </div>
-            <VoteControls itemId={decisionOptionVoteId(decision.id, opt.id)} />
+            <VoteControls itemId={opt.voteId ?? decisionOptionVoteId(decision.id, opt.id)} />
           </div>
         ))}
       </div>
