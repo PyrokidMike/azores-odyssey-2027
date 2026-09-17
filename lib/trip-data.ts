@@ -21,6 +21,34 @@ export const CATEGORIES: { id: CategoryId; label: string }[] = [
   { id: 'land', label: 'Land & Adventure' },
 ]
 
+// A curated activity belongs to one of three collections. This keeps the core
+// itinerary focused while offering optional upgrades and quieter recovery days
+// without overloading the main menu.
+export type Collection = 'core' | 'optional' | 'recovery'
+export const COLLECTIONS: { id: Collection; label: string; blurb: string }[] = [
+  {
+    id: 'core',
+    label: 'Core itinerary',
+    blurb:
+      'The high-priority pillars: whales, water, volcanoes, caves, hikes, canyoning, plantations and culture.',
+  },
+  {
+    id: 'optional',
+    label: 'Optional adventures',
+    blurb:
+      'Adults and older teens only — optional upgrades that should not drive island choice.',
+  },
+  {
+    id: 'recovery',
+    label: 'Family recovery & discovery',
+    blurb: 'Quieter, lower-energy days to slot between the big adventures.',
+  },
+]
+
+// Sub-theme used only inside the Optional adventures collection.
+export type OptionalTheme = 'Aerial' | 'Underwater' | 'Technical land'
+export const OPTIONAL_THEMES: OptionalTheme[] = ['Aerial', 'Underwater', 'Technical land']
+
 export type Intensity = 'Easy' | 'Moderate' | 'High'
 export const INTENSITIES: Intensity[] = ['Easy', 'Moderate', 'High']
 
@@ -59,6 +87,10 @@ export interface Activity {
   id: string
   name: string
   category: CategoryId
+  /** Defaults to the core itinerary when omitted. */
+  collection?: Collection
+  /** Sub-theme, only meaningful for the optional adventures collection. */
+  theme?: OptionalTheme
   islands: Island[]
   groupFit: GroupFit
   fitNote: string
@@ -355,18 +387,18 @@ export const ACTIVITIES: Activity[] = [
     link: 'https://www.visitazores.com/en',
   },
   {
-    id: 'thermal-pools',
-    name: 'Thermal pools',
+    id: 'terra-nostra',
+    name: 'Terra Nostra thermal pool',
     category: 'volcano',
     islands: ['São Miguel'],
     groupFit: 'Whole group',
-    fitNote: 'Excellent recovery activity.',
+    fitNote: 'Large iron-rich pool inside a botanical garden — easy for all ages.',
     intensity: 'Easy',
     notes:
-      'Excellent recovery activity. Check timed-entry, age, swimsuit and pool rules for the chosen venue.',
+      'Large 35–40°C iron-rich thermal pool set in an elaborate botanical garden — a full-day Furnas cultural and geothermal stop. The iron water stains swimwear, so bring older suits.',
     urgency: 'Confirm before booking',
     status: 'Confirmed research',
-    link: 'https://www.visitazores.com/en',
+    link: 'https://parquesnaturais.azores.gov.pt/en/',
   },
   {
     id: 'gruta-do-carvao',
@@ -587,6 +619,236 @@ export const ACTIVITIES: Activity[] = [
     intensity: 'Moderate',
     notes:
       'Guided e-bike routes make coastal and vineyard rides accessible for mixed fitness levels. Confirm 2027 minimum age, height and helmet requirements with the operator.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en',
+  },
+  {
+    id: 'sailing-cruise',
+    name: 'Private coastal sailing cruise',
+    category: 'water',
+    islands: ['São Miguel', 'Faial', 'Pico'],
+    groupFit: 'Whole group',
+    fitNote: 'Whole group only if a licensed vessel fits the headcount.',
+    intensity: 'Easy',
+    notes:
+      'A less rushed, more celebratory alternative to a standard whale-watch boat. For 13, confirm licensed vessel capacity and the weather-cancellation policy before booking.',
+    urgency: 'Book early',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/picos-de-aventura-animacao-e-lazer',
+  },
+  {
+    id: 'fishing-charter',
+    name: 'Family fishing charter',
+    category: 'water',
+    islands: ['São Miguel', 'Faial', 'Pico'],
+    groupFit: 'Adults/older kids',
+    fitNote: 'Gives non-surfers and non-swimmers a distinctive water option.',
+    intensity: 'Moderate',
+    notes:
+      'A distinctive water outing for those who skip surfing or dolphin swims. Review motion-sickness, catch-and-release and charter rules; avoid full-day big-game fishing for a mixed-age group.',
+    urgency: 'Confirm before booking',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/picos-de-aventura-animacao-e-lazer',
+  },
+  {
+    id: 'four-by-four',
+    name: 'Guided 4x4 / van adventure',
+    category: 'land',
+    islands: ['São Miguel'],
+    groupFit: 'Whole group',
+    fitNote: 'Good mixed-age day; lets hikers and non-drivers see remote areas together.',
+    intensity: 'Easy',
+    notes:
+      'Lets hikers, young children and non-drivers reach remote Nordeste, Furnas or Sete Cidades together. A strong weather fallback — not necessarily a replacement for every hike.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/azores-islands-experience',
+  },
+
+  // OPTIONAL ADVENTURES — adults & older teens only, should not drive island choice
+  {
+    id: 'paragliding',
+    name: 'Tandem paragliding flight',
+    category: 'land',
+    collection: 'optional',
+    theme: 'Aerial',
+    islands: ['São Miguel'],
+    groupFit: 'Adults/older kids',
+    fitNote: 'Not a whole-group requirement; licensed tandem operators only.',
+    intensity: 'High',
+    notes:
+      'The strongest "we did something wild" aerial option, with crater-lake and coastline views. Weather-dependent; use licensed tandem operators only.',
+    urgency: 'Weather dependent',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/the-azores/sao-miguel',
+  },
+  {
+    id: 'rock-climbing',
+    name: 'Rock climbing / guided abseiling',
+    category: 'land',
+    collection: 'optional',
+    theme: 'Technical land',
+    islands: ['São Miguel'],
+    groupFit: 'Adults/older kids',
+    fitNote: 'Confident older kids and adults; reserve as a split group.',
+    intensity: 'High',
+    notes:
+      'A more technical land adventure than hiking, ziplining or canyoning. Age, height and fitness restrictions vary sharply between operators.',
+    urgency: 'Confirm before booking',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/azores-adventure-islands',
+  },
+  {
+    id: 'scuba-discover',
+    name: 'Scuba "discover" dive',
+    category: 'water',
+    collection: 'optional',
+    theme: 'Underwater',
+    islands: ['São Miguel', 'Faial', 'Pico'],
+    groupFit: 'Adults/older kids',
+    fitNote: 'Confident swimmers and older kids; age-appropriate operator products.',
+    intensity: 'Moderate',
+    notes:
+      'A true underwater option beyond dolphin swimming and open-ocean whale watching. Use age-appropriate operator products; weather and sea state matter. Skip deep technical certifications.',
+    urgency: 'Confirm before booking',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore',
+  },
+  {
+    id: 'freediving-snorkel',
+    name: 'Freediving / snorkeling excursion',
+    category: 'water',
+    collection: 'optional',
+    theme: 'Underwater',
+    islands: ['São Miguel'],
+    groupFit: 'Adults/older kids',
+    fitNote: 'Simpler and more flexible than scuba; good for confident swimmers.',
+    intensity: 'Moderate',
+    notes:
+      'Usually simpler and more flexible than scuba and a good add-on for confident swimmers. Do not treat it as a substitute for the Vila Franca islet if the islet is closed.',
+    urgency: 'Confirm before booking',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/azores-islands-experience',
+  },
+
+  // FAMILY RECOVERY & DISCOVERY — quieter, lower-energy days between big adventures
+  {
+    id: 'caldeira-velha',
+    name: 'Caldeira Velha thermal waterfall',
+    category: 'water',
+    collection: 'recovery',
+    islands: ['São Miguel'],
+    groupFit: 'Whole group',
+    fitNote: 'Timed entry; a kid-friendly recovery stop near Lagoa do Fogo.',
+    intensity: 'Easy',
+    notes:
+      'A jungle-like thermal waterfall and warm pools — not simply "another hot spring." Book or confirm timed entry; an active-family day near Ribeira Grande and Lagoa do Fogo.',
+    urgency: 'Confirm before booking',
+    status: 'Confirmed research',
+    link: 'https://www.visitazores.com/en',
+  },
+  {
+    id: 'poca-dona-beija',
+    name: 'Poça da Dona Beija night soak',
+    category: 'volcano',
+    collection: 'recovery',
+    islands: ['São Miguel'],
+    groupFit: 'Whole group',
+    fitNote: 'Go in staggered waves; particularly atmospheric at night.',
+    intensity: 'Easy',
+    notes:
+      'Multiple smaller warm pools in Furnas, especially good after dark as a post-hike or post-canyoning reset. Confirm time-slot, child and swimwear rules.',
+    urgency: 'Confirm before booking',
+    status: 'Confirmed research',
+    link: 'https://www.visitazores.com/en',
+  },
+  {
+    id: 'ferraria',
+    name: 'Ponta da Ferraria geothermal ocean swim',
+    category: 'water',
+    collection: 'recovery',
+    islands: ['São Miguel'],
+    groupFit: 'Whole group',
+    fitNote: 'Whole group only if the sea is calm; best around low tide.',
+    intensity: 'Moderate',
+    notes:
+      'A rare ocean cove heated by geothermal activity — one of the more unusual family stories of the trip. Best around low tide; swell and current can make it unsuitable.',
+    urgency: 'Weather dependent',
+    status: 'Confirmed research',
+    link: 'https://travel-azores.com/en/magazine/azores-for-families-best-activities-with-kids',
+  },
+  {
+    id: 'geology-field-day',
+    name: 'Guided geology / volcano field day',
+    category: 'volcano',
+    collection: 'recovery',
+    islands: ['São Miguel', 'Terceira', 'Faial', 'Pico'],
+    groupFit: 'Whole group',
+    fitNote: 'Ties caves, fumaroles, lava walls and crater lakes into one story.',
+    intensity: 'Easy',
+    notes:
+      'Turns Capelinhos, caves, fumaroles, lava walls and crater lakes into one coherent "how the islands formed" story. Use this instead of stacking too many unguided volcanic stops.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/experience-the-azores/geotourism',
+  },
+  {
+    id: 'birdwatching-walk',
+    name: 'Birdwatching / naturalist walk',
+    category: 'land',
+    collection: 'recovery',
+    islands: ['São Miguel', 'Faial', 'Pico'],
+    groupFit: 'Whole group',
+    fitNote: 'Especially good for younger children who like spotting over swimming.',
+    intensity: 'Easy',
+    notes:
+      'A quieter nature option between high-intensity days, useful for kids who enjoy spotting rather than swimming. Best with a guide or a self-guided checklist / scavenger format.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en/explore/azores-islands-experience',
+  },
+  {
+    id: 'horta-scavenger',
+    name: 'Horta marina scavenger hunt',
+    category: 'land',
+    collection: 'recovery',
+    islands: ['Faial'],
+    groupFit: 'Whole group',
+    fitNote: 'A participatory activity for children, not another harbor stroll.',
+    intensity: 'Easy',
+    notes:
+      'The painted-wall marina makes a great scavenger hunt or painted-wall walk that gives children something to do rather than another adult-oriented harbor stroll.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en',
+  },
+  {
+    id: 'whale-museum',
+    name: 'Whaling & maritime museum, Pico',
+    category: 'land',
+    collection: 'recovery',
+    islands: ['Pico'],
+    groupFit: 'Whole group',
+    fitNote: "A companion activity for non-climbers on Mount Pico summit day.",
+    intensity: 'Easy',
+    notes:
+      'A whale-museum and maritime-history stop, particularly useful as the non-climbers\u2019 activity while a committed subset climbs Mount Pico.',
+    urgency: 'Flexible',
+    status: 'Needs 2027 confirmation',
+    link: 'https://www.visitazores.com/en',
+  },
+  {
+    id: 'market-chef-evening',
+    name: 'Market visit & chef evening',
+    category: 'land',
+    collection: 'recovery',
+    islands: ['São Miguel'],
+    groupFit: 'Whole group',
+    fitNote: 'A relaxed evening the whole group can share.',
+    intensity: 'Easy',
+    notes:
+      'A low-energy cultural evening — a local market visit paired with a shared, hands-on chef dinner. A gentle celebratory alternative to another full day out.',
     urgency: 'Flexible',
     status: 'Needs 2027 confirmation',
     link: 'https://www.visitazores.com/en',

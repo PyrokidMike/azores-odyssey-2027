@@ -5,11 +5,15 @@ import { Search, SlidersHorizontal, X } from 'lucide-react'
 import {
   ACTIVITIES,
   CATEGORIES,
+  COLLECTIONS,
   INTENSITIES,
   ISLANDS,
+  OPTIONAL_THEMES,
   type CategoryId,
+  type Collection,
   type Intensity,
   type Island,
+  type OptionalTheme,
 } from '@/lib/trip-data'
 import { ActivityCard } from '@/components/activity-card'
 import { cn } from '@/lib/utils'
@@ -18,29 +22,50 @@ type CatFilter = CategoryId | 'all'
 
 export function ActivityExplorer() {
   const [query, setQuery] = useState('')
+  const [collection, setCollection] = useState<Collection>('core')
   const [category, setCategory] = useState<CatFilter>('all')
   const [island, setIsland] = useState<Island | 'all'>('all')
   const [intensity, setIntensity] = useState<Intensity | 'all'>('all')
+  const [theme, setTheme] = useState<OptionalTheme | 'all'>('all')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return ACTIVITIES.filter((a) => {
+      if ((a.collection ?? 'core') !== collection) return false
+      if (collection === 'optional' && theme !== 'all' && a.theme !== theme) return false
       if (category !== 'all' && a.category !== category) return false
       if (island !== 'all' && !a.islands.includes(island)) return false
       if (intensity !== 'all' && a.intensity !== intensity) return false
       if (q && !(`${a.name} ${a.notes} ${a.fitNote}`.toLowerCase().includes(q))) return false
       return true
     })
-  }, [query, category, island, intensity])
+  }, [query, collection, theme, category, island, intensity])
+
+  const collectionTotal = useMemo(
+    () => ACTIVITIES.filter((a) => (a.collection ?? 'core') === collection).length,
+    [collection],
+  )
+
+  const activeCollection = COLLECTIONS.find((c) => c.id === collection)
 
   const hasFilters =
-    query !== '' || category !== 'all' || island !== 'all' || intensity !== 'all'
+    query !== '' ||
+    category !== 'all' ||
+    island !== 'all' ||
+    intensity !== 'all' ||
+    theme !== 'all'
 
   const reset = () => {
     setQuery('')
     setCategory('all')
     setIsland('all')
     setIntensity('all')
+    setTheme('all')
+  }
+
+  const selectCollection = (id: Collection) => {
+    setCollection(id)
+    setTheme('all')
   }
 
   const catTabs: { id: CatFilter; label: string }[] = [
@@ -50,7 +75,70 @@ export function ActivityExplorer() {
 
   return (
     <div>
+      <div className="mb-5 flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Activity collections">
+          {COLLECTIONS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={collection === c.id}
+              onClick={() => selectCollection(c.id)}
+              className={cn(
+                'min-h-11 rounded-xl border px-4 py-2 text-left text-sm font-semibold transition-colors',
+                collection === c.id
+                  ? 'border-navy bg-navy text-primary-foreground'
+                  : 'border-border bg-card text-foreground/80 hover:border-foreground/25',
+              )}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+        {activeCollection && (
+          <p className="max-w-2xl text-pretty text-sm text-muted-foreground">
+            {activeCollection.blurb}
+          </p>
+        )}
+      </div>
+
       <div className="sticky top-16 z-30 -mx-4 border-b border-border bg-background/85 px-4 py-4 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-5 sm:shadow-sm">
+        {collection === 'optional' && (
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Theme
+            </span>
+            <button
+              type="button"
+              onClick={() => setTheme('all')}
+              aria-pressed={theme === 'all'}
+              className={cn(
+                'min-h-9 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+                theme === 'all'
+                  ? 'bg-accent text-accent-foreground'
+                  : 'border border-border bg-background text-foreground/75 hover:border-foreground/25',
+              )}
+            >
+              All
+            </button>
+            {OPTIONAL_THEMES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTheme(t)}
+                aria-pressed={theme === t}
+                className={cn(
+                  'min-h-9 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+                  theme === t
+                    ? 'bg-accent text-accent-foreground'
+                    : 'border border-border bg-background text-foreground/75 hover:border-foreground/25',
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-2">
           {catTabs.map((tab) => (
             <button
@@ -130,7 +218,7 @@ export function ActivityExplorer() {
 
         <div className="mt-3 flex items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
-            {filtered.length} of {ACTIVITIES.length} activities
+            {filtered.length} of {collectionTotal} in this collection
           </p>
           {hasFilters && (
             <button
