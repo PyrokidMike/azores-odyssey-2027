@@ -1,0 +1,58 @@
+import { Analytics } from '@vercel/analytics/next'
+import type { Metadata, Viewport } from 'next'
+import { Inter, Fraunces } from 'next/font/google'
+import './globals.css'
+import { PlanningProvider } from '@/components/planning-provider'
+import { SiteNav } from '@/components/site-nav'
+import { SiteFooter } from '@/components/site-footer'
+import { NamePromptDialog } from '@/components/name-prompt-dialog'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
+
+export const metadata: Metadata = {
+  title: 'Azores Odyssey 2027 — The Family Expedition',
+  description:
+    'A curated group-decision and voting tool for three families planning an Azores expedition in June 2027. Explore, vote, and build the trip together.',
+  generator: 'v0.app',
+  manifest: '/manifest.json',
+  applicationName: 'Azores Odyssey 2027',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#1c2f47',
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${fraunces.variable} bg-background`}>
+      <body className="font-sans antialiased">
+        <PlanningProvider>
+          <div className="flex min-h-dvh flex-col">
+            <SiteNav />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </div>
+          <NamePromptDialog />
+        </PlanningProvider>
+        {process.env.NODE_ENV === 'production' && <Analytics />}
+      </body>
+    </html>
+  )
+}

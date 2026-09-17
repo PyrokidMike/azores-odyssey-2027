@@ -1,0 +1,16 @@
+{
+  "name": "Azores Odyssey 2027 — The Family Expedition",
+  "short_name": "Azores 2027",
+  "description": "A curated group-decision and voting tool for three families planning an Azores expedition in June 2027.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e9e2d3",
+  "theme_color": "#1c2f47",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

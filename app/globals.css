@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-navy: var(--navy);
+  --color-charcoal: var(--charcoal);
+  --color-sand: var(--sand);
+  --color-green: var(--green);
+  --color-azure: var(--azure);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+  color-scheme: light;
+  --radius: 0.75rem;
+
+  /* Expedition palette */
+  --navy: oklch(0.29 0.046 249);
+  --charcoal: oklch(0.24 0.012 264);
+  --sand: oklch(0.92 0.021 83);
+  --green: oklch(0.5 0.062 156);
+  --azure: oklch(0.6 0.114 233);
+
+  --background: oklch(0.96 0.013 84);
+  --foreground: oklch(0.27 0.03 255);
+
+  --card: oklch(0.988 0.007 84);
+  --card-foreground: oklch(0.27 0.03 255);
+
+  --popover: oklch(0.988 0.007 84);
+  --popover-foreground: oklch(0.27 0.03 255);
+
+  --primary: oklch(0.29 0.046 249);
+  --primary-foreground: oklch(0.97 0.013 84);
+
+  --secondary: oklch(0.89 0.024 83);
+  --secondary-foreground: oklch(0.29 0.046 249);
+
+  --muted: oklch(0.9 0.018 84);
+  --muted-foreground: oklch(0.46 0.024 256);
+
+  --accent: oklch(0.6 0.114 233);
+  --accent-foreground: oklch(0.98 0.01 233);
+
+  --destructive: oklch(0.55 0.2 25);
+
+  --border: oklch(0.83 0.02 84);
+  --input: oklch(0.83 0.02 84);
+  --ring: oklch(0.6 0.114 233);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'kern', 'liga', 'ss01';
+  }
+}
+
+/* Subtle ocean-depth / topographic contour texture */
+.topo-texture {
+  background-color: var(--background);
+  background-image:
+    repeating-radial-gradient(
+      circle at 12% 18%,
+      transparent 0 26px,
+      color-mix(in oklab, var(--navy) 5%, transparent) 26px 27px,
+      transparent 27px 54px
+    ),
+    repeating-radial-gradient(
+      circle at 88% 78%,
+      transparent 0 34px,
+      color-mix(in oklab, var(--azure) 6%, transparent) 34px 35px,
+      transparent 35px 70px
+    );
+}
+
+.topo-texture-strong {
+  background-image:
+    repeating-radial-gradient(
+      circle at 20% 30%,
+      transparent 0 22px,
+      color-mix(in oklab, var(--primary-foreground) 10%, transparent) 22px 23px,
+      transparent 23px 46px
+    ),
+    repeating-radial-gradient(
+      circle at 80% 70%,
+      transparent 0 30px,
+      color-mix(in oklab, var(--azure) 22%, transparent) 30px 31px,
+      transparent 31px 62px
+    );
+}
