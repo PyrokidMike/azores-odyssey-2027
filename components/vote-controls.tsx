@@ -42,9 +42,9 @@ export function VoteControls({
           const count = Object.values(votes).filter((v) => v === opt.value).length
           const style: CSSProperties = active
             ? {
-                backgroundColor: `color-mix(in oklab, ${color} 30%, var(--background))`,
-                borderColor: `color-mix(in oklab, ${color} 85%, var(--border))`,
-                color: `color-mix(in oklab, ${color} 92%, var(--charcoal))`,
+                backgroundColor: `color-mix(in oklab, ${color} 78%, white)`,
+                borderColor: color,
+                color: `color-mix(in oklab, ${color} 78%, var(--charcoal))`,
               }
             : {}
           return (
