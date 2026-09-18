@@ -145,7 +145,7 @@ export const DECISIONS: Decision[] = [
     question: 'Which part of June works best?',
     notes:
       'Down and dirty: early June is the simplest default for whale watching and lighter crowds. Mid-June may be best if Vila Franca opens. Late June is only worth it if Sanjoaninas is a priority; expect festival crowds, higher demand, and less flexible transport. Pick the dates that match the experience you actually want, not just the cheapest flights.',
-    sourceLink: 'https://www.visitazores.com/en/experiences/events',
+    sourceLink: 'https://www.visitazores.com/en/experiences/whale-watching-and-dolphin-watching',
     voteLabels: { must: 'Best fit', interested: 'Could work', skip: 'No preference', no: 'Not available' },
     keyPoints: ['Early June usually gives calmer logistics and strong whale activity.', 'Mid-June may unlock Vila Franca do Campo, depending on the seasonal opening.', 'Late June brings Sanjoaninas energy but also busier roads, lodging, and restaurants.'],
     experiences: ['Whale watching and ocean days', 'Seasonal festivals and local food', 'More relaxed sightseeing with fewer crowds'],
