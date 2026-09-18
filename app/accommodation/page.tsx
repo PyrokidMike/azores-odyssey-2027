@@ -12,7 +12,7 @@ const PREVIEW = [
   {
     icon: Home,
     title: 'Large-group villas',
-    body: 'A 13-person group needs scarce large villas booked well ahead. Candidates will be gathered here once headcount is locked.',
+    body: 'Lodging candidates will be gathered here once the activities, island concept, and final itinerary are clearer.',
   },
   {
     icon: MapPin,
@@ -32,7 +32,7 @@ export default function AccommodationPage() {
       <PageHeader
         eyebrow="Where we stay"
         title="Accommodation"
-        intro="Lodging depends on the decisions still in play — headcount, trip length, and which islands make the final itinerary. This room opens once those are settled."
+        intro="Lodging depends on the activities, trip length, and islands that make the final itinerary. This room opens once those are settled."
       />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="flex flex-col items-center rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
@@ -47,7 +47,7 @@ export default function AccommodationPage() {
           </h2>
           <p className="mt-2 max-w-md text-pretty leading-relaxed text-muted-foreground">
             We&apos;ll collect villa candidates, base-town options, and room splits here after the
-            group settles headcount, length, and islands.
+            the planning group settles length and islands.
           </p>
           <Link
             href="/decisions"

@@ -135,18 +135,6 @@ export interface IslandConcept {
 
 export const DECISIONS: Decision[] = [
   {
-    id: 'headcount',
-    title: 'Headcount',
-    question: 'Planning baseline: how many travelers are we organizing for?',
-    notes:
-      '13 requires scarce large villas, likely 3 vehicles, early restaurant reservations, and more careful group-capacity planning. 9 makes multi-island logistics much easier.',
-    options: [
-      { id: '9', label: '9 travelers', detail: 'Easier multi-island logistics and lodging' },
-      { id: '13', label: '13 travelers', detail: 'Full group — needs scarce large villas and 3 vehicles' },
-    ],
-    baselineOptionId: '13',
-  },
-  {
     id: 'timing',
     title: 'Timing',
     question: 'Which part of June works best?',
@@ -632,7 +620,7 @@ export const ACTIVITIES: Activity[] = [
     category: 'water',
     islands: ['São Miguel', 'Faial', 'Pico'],
     groupFit: 'Whole group',
-    fitNote: 'Whole group only if a licensed vessel fits the headcount.',
+    fitNote: 'Whole group only if a licensed vessel fits everyone safely.',
     intensity: 'Easy',
     notes:
       'A less rushed, more celebratory alternative to a standard whale-watch boat. For 13, confirm licensed vessel capacity and the weather-cancellation policy before booking.',

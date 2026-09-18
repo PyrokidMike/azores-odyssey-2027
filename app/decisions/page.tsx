@@ -6,7 +6,7 @@ import { DECISIONS } from '@/lib/trip-data'
 export const metadata: Metadata = {
   title: 'Group Decisions — Azores Odyssey 2027',
   description:
-    'Vote on the six foundational trip decisions: headcount, timing, length, Mount Pico, island concept, and the priority tradeoff.',
+    'Explore the activities first, then vote on timing, length, Mount Pico, island concept, and the priority tradeoffs.',
 }
 
 export default function DecisionsPage() {
@@ -15,7 +15,7 @@ export default function DecisionsPage() {
       <PageHeader
         eyebrow="Decide together"
         title="Group Decisions"
-        intro="These six decisions shape everything else — islands, pacing, and cost. Headcount is confirmed at 13 travelers for this planning round. Vote on the remaining five decisions and leave comments; shared votes are saved to your account."
+        intro="These decisions are intentionally second: explore the activities and island concepts first, then vote on timing, trip length, Mount Pico, island concept, and priorities. Shared votes are saved to your account."
       />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="grid gap-6">

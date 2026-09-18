@@ -14,7 +14,7 @@ const QUICK_LINKS = [
   {
     href: '/decisions',
     title: 'Group Decisions',
-    desc: 'Vote on headcount, timing, trip length, Mt. Pico, and the priority tradeoff.',
+    desc: 'After exploring activities, weigh timing, trip length, Mount Pico, island concept, and priorities.',
     icon: Vote,
     meta: `${DECISIONS.length} open decisions`,
   },
@@ -65,22 +65,22 @@ export default function OverviewPage() {
       <section className="topo-texture-strong relative overflow-hidden border-b border-border bg-navy text-primary-foreground">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-azure">
-            The Family Expedition · June 2027
+            Welcome to the family planning room · June 2027
           </p>
           <h1 className="mt-4 max-w-3xl text-balance font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Azores Odyssey 2027
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/80">
-            A shared planning room for three families and a 13-person expedition baseline. Explore
-            hand-curated activities across four islands, weigh the big decisions, and vote your way
-            to one itinerary everyone is excited about.
+            Welcome to Azores Odyssey 2027. Please set up an account first so your votes, tasks,
+            notes, and contributions are connected to you. Then explore the hand-curated activities
+            across four islands before weighing the larger itinerary decisions.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/decisions"
+              href="/sign-up"
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
             >
-              Start with group decisions
+              Set up your account
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
             <Link

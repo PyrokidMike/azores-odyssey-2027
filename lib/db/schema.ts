@@ -69,7 +69,7 @@ export const member = pgTable('member', {
 })
 
 // One vote per member per item. itemId is a stable key like
-// "activity:whale-watching", "decision:headcount:9", or "concept:saomiguel-only".
+// "activity:whale-watching", "decision:timing:early", or "concept:saomiguel-only".
 export const vote = pgTable(
   'vote',
   {

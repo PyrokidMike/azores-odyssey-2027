@@ -84,12 +84,20 @@ export function SiteNav() {
               Sign out
             </button>
           ) : (
-            <Link
-              href="/sign-in"
-              className="hidden rounded-full border border-primary-foreground/20 px-3 py-1.5 text-xs font-medium text-primary-foreground/85 transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground sm:inline-flex"
-            >
-              Sign in
-            </Link>
+            <span className="hidden items-center gap-1.5 sm:flex">
+              <Link
+                href="/sign-in"
+                className="rounded-full border border-primary-foreground/20 px-3 py-1.5 text-xs font-medium text-primary-foreground/85 transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/sign-up"
+                className="rounded-full border border-accent/50 bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+              >
+                Set up account
+              </Link>
+            </span>
           )}
           <Button
             variant="ghost"
