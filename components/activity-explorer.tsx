@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react'
 import {
   ACTIVITIES,
   CATEGORIES,
@@ -31,6 +31,7 @@ export function ActivityExplorer({
   const [island, setIsland] = useState<Island | 'all'>('all')
   const [intensity, setIntensity] = useState<Intensity | 'all'>('all')
   const [theme, setTheme] = useState<OptionalTheme | 'all'>('all')
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -106,7 +107,24 @@ export function ActivityExplorer({
         )}
       </div>
 
-      <div className="sticky top-16 z-30 -mx-4 border-b border-border bg-background/85 px-4 py-4 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-5 sm:shadow-sm">
+      <div className="sticky top-16 z-30 -mx-4 border-b border-border bg-background/85 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:px-5 sm:shadow-sm">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((open) => !open)}
+          aria-expanded={filtersOpen}
+          className="flex min-h-11 w-full items-center justify-between gap-3 text-left"
+        >
+          <span>
+            <span className="block text-sm font-semibold text-foreground">Filter activities</span>
+            <span className="block text-xs text-muted-foreground">
+              {filtered.length} of {collectionTotal} showing{hasFilters ? ' · filters active' : ''}
+            </span>
+          </span>
+          <ChevronDown className={cn('size-5 text-muted-foreground transition-transform', filtersOpen && 'rotate-180')} aria-hidden="true" />
+        </button>
+
+        {filtersOpen && (
+          <div className="pt-3">
         {collection === 'optional' && (
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -235,6 +253,8 @@ export function ActivityExplorer({
             </button>
           )}
         </div>
+          </div>
+        )}
       </div>
 
       {filtered.length > 0 ? (
