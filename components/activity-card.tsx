@@ -81,7 +81,7 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
         <p className="text-sm font-medium leading-relaxed text-foreground/90">{activity.fitNote}</p>
         <p className="text-sm leading-relaxed text-muted-foreground">{activity.notes}</p>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          Details are curated planning notes. Confirm current rules, age limits, availability, and weather requirements with the provider before booking.
+          Planning guide only. Providers current rules, age limits, availability, and weather requirements will be confirmed before booking.
         </p>
       </div>
 
