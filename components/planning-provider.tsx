@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { addComment as saveComment, saveVote as saveSharedVote } from '@/app/actions/trip-hub'
 import type { VoteValue } from '@/lib/trip-data'
 
 const STORAGE_KEY = 'azores-odyssey-2027:v1'
@@ -54,11 +55,13 @@ const PlanningContext = createContext<PlanningContextValue | null>(null)
 export function PlanningProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<PersistedState>(EMPTY)
   const [ready, setReady] = useState(false)
+  const [sharedLoaded, setSharedLoaded] = useState(false)
   const [namePromptOpen, setNamePromptOpen] = useState(false)
   const pendingVote = useRef<{ itemId: string; value: VoteValue } | null>(null)
 
-  // Load once on mount.
+  // Load the local fallback first, then replace it with the signed-in account history.
   useEffect(() => {
+    let cancelled = false
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
@@ -72,18 +75,46 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Corrupt or unavailable storage — start clean.
     }
-    setReady(true)
+
+    void fetch('/api/hub/state', { cache: 'no-store' })
+      .then(async (response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.user) return
+        const votes: PersistedState['votes'] = {}
+        for (const entry of data.votes ?? []) {
+          const itemVotes = (votes[entry.itemId] ??= {})
+          itemVotes[entry.authorName || entry.userId] = entry.choice as VoteValue
+        }
+        const comments: PersistedState['comments'] = {}
+        for (const entry of data.comments ?? []) {
+          const threadComments = (comments[entry.threadId] ??= [])
+          threadComments.push({
+            id: String(entry.id),
+            author: entry.authorName,
+            text: entry.body,
+            ts: new Date(entry.createdAt).getTime(),
+          })
+        }
+        setState({ displayName: data.user.name ?? null, votes, comments })
+        setSharedLoaded(true)
+      })
+      .catch(() => setSharedLoaded(true))
+      .finally(() => setReady(true))
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  // Persist on change (after initial load).
+  // Keep a browser fallback for offline rendering, without overwriting account history during hydration.
   useEffect(() => {
-    if (!ready) return
+    if (!ready || !sharedLoaded) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     } catch {
       // Ignore write failures (private mode, quota, etc.).
     }
-  }, [state, ready])
+  }, [state, ready, sharedLoaded])
 
   const applyVote = useCallback(
     (name: string, itemId: string, value: VoteValue) => {
@@ -116,6 +147,7 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
       if (pending) {
         pendingVote.current = null
         applyVote(clean, pending.itemId, pending.value)
+        void saveSharedVote(pending.itemId, pending.value)
       }
     },
     [applyVote],
@@ -134,6 +166,7 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
         return
       }
       applyVote(name, itemId, value)
+      void saveSharedVote(itemId, value)
     },
     [state.displayName, applyVote],
   )
@@ -156,6 +189,7 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
           [threadId]: [...(prev.comments[threadId] ?? []), entry],
         },
       }))
+      void saveComment(threadId, entry.text)
     },
     [state.displayName],
   )

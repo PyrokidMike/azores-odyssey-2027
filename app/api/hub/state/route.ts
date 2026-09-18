@@ -14,5 +14,11 @@ export async function GET() {
     db.select().from(task).orderBy(desc(task.createdAt)),
     db.select().from(contribution).orderBy(desc(contribution.createdAt)),
   ])
-  return NextResponse.json({ votes, comments, tasks, contributions })
+  return NextResponse.json({
+    user: { id: session.user.id, name: session.user.name },
+    votes,
+    comments,
+    tasks,
+    contributions,
+  })
 }
