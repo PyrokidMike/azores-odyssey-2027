@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ExternalLink, MessageSquarePlus } from 'lucide-react'
-import { addContribution } from '@/app/actions/trip-hub'
+import { addContribution, saveActivityProgress } from '@/app/actions/trip-hub'
 import {
   type Activity,
   activityThreadId,
@@ -20,8 +20,12 @@ import {
 import { VoteControls } from '@/components/vote-controls'
 import { CommentThread } from '@/components/comment-thread'
 
-export function ActivityCard({ activity }: { activity: Activity }) {
+export function ActivityCard({ activity, reviewed = false }: { activity: Activity; reviewed?: boolean }) {
   const [requestOpen, setRequestOpen] = useState(false)
+
+  useEffect(() => {
+    void saveActivityProgress(activity.id)
+  }, [activity.id])
   const [request, setRequest] = useState('')
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -61,6 +65,7 @@ export function ActivityCard({ activity }: { activity: Activity }) {
           {activity.name}
         </h3>
         <div className="flex flex-wrap gap-1.5">
+          {reviewed && <Pill tone="neutral">Saved to your activity review</Pill>}
           <IntensityBadge intensity={activity.intensity} />
           <GroupFitBadge fit={activity.groupFit} />
           <UrgencyBadge urgency={activity.urgency} />

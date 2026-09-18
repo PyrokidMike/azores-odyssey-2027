@@ -20,7 +20,11 @@ import { cn } from '@/lib/utils'
 
 type CatFilter = CategoryId | 'all'
 
-export function ActivityExplorer() {
+export function ActivityExplorer({
+  initialProgress = [],
+}: {
+  initialProgress?: { activityId: string; state: string }[]
+}) {
   const [query, setQuery] = useState('')
   const [collection, setCollection] = useState<Collection>('core')
   const [category, setCategory] = useState<CatFilter>('all')
@@ -236,7 +240,11 @@ export function ActivityExplorer() {
       {filtered.length > 0 ? (
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           {filtered.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} />
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              reviewed={initialProgress.some((item) => item.activityId === activity.id && item.state === 'reviewed')}
+            />
           ))}
         </div>
       ) : (

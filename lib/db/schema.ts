@@ -115,6 +115,21 @@ export const task = pgTable('task', {
 })
 
 // Shared contributions: notes, links, and photos that add to the trip.
+export const activityProgress = pgTable(
+  'activity_progress',
+  {
+    id: serial('id').primaryKey(),
+    userId: text('userId').notNull(),
+    activityId: text('activityId').notNull(),
+    state: text('state').notNull().default('unseen'), // 'unseen' | 'reviewed'
+    lastViewedAt: timestamp('lastViewedAt').notNull().defaultNow(),
+    updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  },
+  (t) => ({
+    uniqueUserActivity: unique('activity_progress_user_activity_unique').on(t.userId, t.activityId),
+  }),
+)
+
 export const contribution = pgTable('contribution', {
   id: serial('id').primaryKey(),
   userId: text('userId').notNull(),

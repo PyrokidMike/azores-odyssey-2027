@@ -5,12 +5,19 @@ import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { comment, contribution, member, task, user, vote } from '@/lib/db/schema'
+import { activityProgress, comment, contribution, member, task, user, vote } from '@/lib/db/schema'
 
 async function currentUser() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) throw new Error('Unauthorized')
   return session.user
+}
+
+export async function saveActivityProgress(activityId: string, state = 'reviewed') {
+  const current = await currentUser()
+  await db.insert(activityProgress).values({ userId: current.id, activityId, state, lastViewedAt: new Date(), updatedAt: new Date() }).onConflictDoUpdate({ target: [activityProgress.userId, activityProgress.activityId], set: { state, lastViewedAt: new Date(), updatedAt: new Date() } })
+  revalidatePath('/activities')
+  return { ok: true }
 }
 
 export async function saveVote(itemId: string, choice: string) {
