@@ -6,10 +6,11 @@ import { usePlanning } from '@/components/planning-provider'
 import { cn } from '@/lib/utils'
 
 const VOTE_COLOR: Record<VoteValue, string> = {
-  must: 'var(--green)',
-  interested: 'var(--azure)',
-  skip: 'oklch(0.62 0.06 70)',
-  no: 'var(--destructive)',
+  // Distinct, grounded colors: stronger than the neutral state without becoming neon.
+  must: 'oklch(0.42 0.12 155)',
+  interested: 'oklch(0.44 0.13 245)',
+  skip: 'oklch(0.54 0.13 72)',
+  no: 'oklch(0.46 0.13 25)',
 }
 
 export function VoteControls({
