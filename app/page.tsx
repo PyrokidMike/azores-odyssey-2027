@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -9,6 +11,7 @@ import {
   CalendarRange,
 } from 'lucide-react'
 import { ACTIVITIES, DECISIONS, ISLAND_CONCEPTS } from '@/lib/trip-data'
+import { useSession } from '@/lib/auth-client'
 
 const QUICK_LINKS = [
   {
@@ -60,6 +63,11 @@ const FRAMING = [
 ]
 
 export default function OverviewPage() {
+  const { data: session, isPending } = useSession()
+  const userName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'there'
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+
   return (
     <>
       <section className="topo-texture-strong relative overflow-hidden border-b border-border bg-navy text-primary-foreground">
@@ -71,18 +79,27 @@ export default function OverviewPage() {
             Azores Odyssey 2027
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/80">
-            Welcome to Azores Odyssey 2027. Please set up an account first so your votes, tasks,
-            notes, and contributions are connected to you. Then explore the hand-curated activities
-            across four islands before weighing the larger itinerary decisions.
+            Explore the hand-curated activities across four islands, save your choices as you go,
+            and help shape the itinerary before weighing the larger planning decisions.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/sign-up"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
-            >
-              Set up your account
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
+            {isPending ? (
+              <div className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary-foreground/20 px-6 py-3 text-sm text-primary-foreground/70">
+                Checking your account…
+              </div>
+            ) : session?.user ? (
+              <div className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-success px-6 py-3 text-sm font-semibold text-success-foreground">
+                <span>{greeting}, {userName}</span>
+              </div>
+            ) : (
+              <Link
+                href="/sign-up"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
+              >
+                Set up your account
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            )}
             <Link
               href="/activities"
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-primary-foreground/25 px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
