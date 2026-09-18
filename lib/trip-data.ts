@@ -144,7 +144,7 @@ export const DECISIONS: Decision[] = [
     title: 'Timing',
     question: 'Which part of June works best?',
     notes:
-      'Down and dirty: early June is the simplest default for whale watching and lighter crowds. Mid-June may be best if Vila Franca opens. Late June is only worth it if Sanjoaninas is a priority; expect festival crowds, higher demand, and less flexible transport. Pick the dates that match the experience you actually want, not just the cheapest flights.',
+      'Early June is the simplest default for whale watching and lighter crowds. Mid-June may be best if Vila Franca opens. Late June is only worth it if Sanjoaninas is a priority; expect festival crowds, higher demand, and less flexible transport. Pick the dates that match the experience you actually want, not just the cheapest flights.',
     sourceLink: 'https://www.visitazores.com/en/experiences/whale-watching-and-dolphin-watching',
     voteLabels: { must: 'Best fit', interested: 'Could work', skip: 'No preference', no: 'Not available' },
     keyPoints: ['Early June usually gives calmer logistics and strong whale activity.', 'Mid-June may unlock Vila Franca do Campo, depending on the seasonal opening.', 'Late June brings Sanjoaninas energy but also busier roads, lodging, and restaurants.'],
@@ -161,7 +161,7 @@ export const DECISIONS: Decision[] = [
     title: 'Trip length',
     question: 'How many nights?',
     notes:
-      'Down and dirty: 5 nights means one island and a tight schedule. 7 nights gives São Miguel room to breathe. 11 nights can support one additional island without turning the trip into transfers. 13 nights is the point where a more ambitious multi-island route becomes realistic. More nights add cost, luggage moves, and travel days as well as experiences.',
+      'Five nights means one island and a tight schedule. Seven nights gives São Miguel room to breathe. Eleven or thirteen nights can support one additional island, but add cost, luggage moves, and travel days as well as experiences.',
     sourceLink: 'https://www.visitazores.com/en/plan-your-trip/getting-around',
     voteLabels: { must: 'My preference', interested: 'I could do this', skip: 'No preference', no: 'Does not work' },
     keyPoints: ['Five nights is a focused São Miguel trip with little room for weather changes.', 'Seven nights gives the main island breathing room without overcomplicating travel.', 'Eleven or thirteen nights make a second island more realistic, but add travel days and cost.'],
@@ -179,7 +179,7 @@ export const DECISIONS: Decision[] = [
     title: 'Mt. Pico participation',
     question: 'Where do you stand on the Mount Pico climb?',
     notes:
-      'Down and dirty: this is not a casual walk. The summit is a long, steep, exposed day with a guide, a reservation, suitable fitness, weather flexibility, and a recovery day. The climb can be cancelled by conditions, so it should not dictate everyone’s itinerary unless a committed subgroup is large enough to justify the island transfer and buffer day.',
+      'This is not a casual walk. The summit is a long, steep, exposed day with a guide, a reservation, suitable fitness, weather flexibility, and a recovery day. The climb can be cancelled by conditions, so it should not dictate everyone’s itinerary unless a committed subgroup is large enough to justify the island transfer and buffer day.',
     sourceLink: 'https://montanhapico.pt/en/mountain/',
     voteLabels: { must: 'I am committed', interested: 'I may join', skip: 'I will support others', no: 'I will not climb' },
     keyPoints: ['This is a guided, strenuous summit day—not a casual hike.', 'Weather can cancel or delay the climb, so flexibility is essential.', 'Non-climbers need a worthwhile alternative while the climbing group is away.'],
@@ -196,7 +196,7 @@ export const DECISIONS: Decision[] = [
     title: 'Island concept',
     question: 'Which island concept should we build the trip around?',
     notes:
-      'Down and dirty: choose the route before pricing lodging. São Miguel only is the easiest and richest base. Adding Terceira or Faial/Pico adds transfer time, packing, weather risk, and cost—but unlocks specific experiences. The maximum route is only sensible with enough nights and a group willing to spend multiple days moving between islands.',
+      'Choose the route before pricing lodging. São Miguel only is the easiest and richest base. Adding Terceira or Faial/Pico adds transfer time, packing, weather risk, and cost—but unlocks specific experiences. The maximum route is only sensible with enough nights and a group willing to spend multiple days moving between islands.',
     sourceLink: '/concepts',
     voteLabels: { must: 'My first choice', interested: 'I would consider it', skip: 'No strong view', no: 'Not for me' },
     keyPoints: ['São Miguel only offers the simplest logistics and the broadest mix of activities.', 'Terceira adds Angra, caves, and culture; Faial/Pico adds volcanoes, vineyards, and the mountain.', 'Every added island means another transfer, weather exposure, and accommodation move.'],
@@ -234,7 +234,7 @@ export const DECISIONS: Decision[] = [
     title: 'Priority tradeoff',
     question: 'If we must choose a character for the trip, which one?',
     notes:
-      'Down and dirty: this is the tie-breaker. Pick the experience you would be most disappointed to miss. Caves and culture favor Terceira; volcanoes and vineyards favor Faial/Pico; water and adventure favor a slower São Miguel plan; maximum variety means accepting more transfers and less downtime.',
+      'This is the tie-breaker. Pick the experience you would be most disappointed to miss. Caves and culture favor Terceira; volcanoes and vineyards favor Faial/Pico; water and adventure favor a slower São Miguel plan; maximum variety means accepting more transfers and less downtime.',
     sourceLink: '/activities',
     voteLabels: { must: 'Top priority', interested: 'Strong interest', skip: 'Not a priority', no: 'Please avoid' },
     keyPoints: ['Caves and culture favor Terceira; volcanoes, vineyards, and Pico favor Faial/Pico.', 'Water and adventure work best when the itinerary leaves room for weather changes.', 'Maximum variety is possible, but each transfer reduces unstructured family time.'],
