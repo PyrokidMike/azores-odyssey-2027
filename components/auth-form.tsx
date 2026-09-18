@@ -17,16 +17,21 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     event.preventDefault()
     setError('')
     setPending(true)
-    const result = isSignUp
-      ? await authClient.signUp.email({ name, email, password })
-      : await authClient.signIn.email({ email, password })
-    setPending(false)
-    if (result.error) {
-      setError('We could not complete that request. Check your details and try again.')
-      return
+    try {
+      const result = isSignUp
+        ? await authClient.signUp.email({ name, email, password })
+        : await authClient.signIn.email({ email, password })
+      if (result.error) {
+        setError('We could not complete that request. Check your details and try again.')
+        return
+      }
+      router.push('/')
+      router.refresh()
+    } catch {
+      setError('We could not reach the sign-in service. Please try again.')
+    } finally {
+      setPending(false)
     }
-    router.push('/')
-    router.refresh()
   }
 
   return (

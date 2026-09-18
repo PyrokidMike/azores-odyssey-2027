@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, MessageSquarePlus } from 'lucide-react'
 import { addContribution, saveActivityProgress } from '@/app/actions/trip-hub'
+import { useSession } from '@/lib/auth-client'
 import {
   type Activity,
   activityThreadId,
@@ -22,14 +23,16 @@ import { CommentThread } from '@/components/comment-thread'
 
 export function ActivityCard({ activity, reviewed = false }: { activity: Activity; reviewed?: boolean }) {
   const [requestOpen, setRequestOpen] = useState(false)
-
-  useEffect(() => {
-    void saveActivityProgress(activity.id)
-  }, [activity.id])
   const [request, setRequest] = useState('')
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const { data: session } = useSession()
   const categoryLabel = CATEGORIES.find((c) => c.id === activity.category)?.label ?? ''
+
+  useEffect(() => {
+    if (!session?.user) return
+    void saveActivityProgress(activity.id).catch(() => undefined)
+  }, [activity.id, session?.user])
 
   async function submitRequest() {
     if (!request.trim()) return
