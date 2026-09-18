@@ -21,10 +21,30 @@ export function DecisionCard({ decision }: { decision: Decision }) {
         </h3>
       </header>
 
-      <div className="space-y-3 rounded-xl bg-secondary/60 p-3.5">
+      <div className="space-y-4 rounded-xl bg-secondary/60 p-3.5">
         <div className="flex gap-2.5">
           <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <p className="text-sm leading-relaxed text-secondary-foreground/85">{decision.notes}</p>
+        </div>
+        <div className="grid gap-4 border-t border-border/70 pt-4 sm:grid-cols-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">Key points</p>
+            <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-secondary-foreground/85">
+              {decision.keyPoints?.map((item) => <li key={item}>• {item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">What you could experience</p>
+            <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-secondary-foreground/85">
+              {decision.experiences?.map((item) => <li key={item}>• {item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-destructive">Critical items</p>
+            <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-secondary-foreground/85">
+              {decision.criticalItems?.map((item) => <li key={item}>• {item}</li>)}
+            </ul>
+          </div>
         </div>
         {decision.sourceLink && (
           <a
