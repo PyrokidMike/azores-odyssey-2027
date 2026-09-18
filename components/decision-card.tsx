@@ -42,7 +42,15 @@ export function DecisionCard({ decision }: { decision: Decision }) {
                 <p className="mt-0.5 text-sm text-muted-foreground">{opt.detail}</p>
               )}
             </div>
-            <VoteControls itemId={opt.voteId ?? decisionOptionVoteId(decision.id, opt.id)} />
+            {decision.id === 'headcount' ? (
+              <p className="rounded-lg bg-secondary/60 px-3 py-2 text-xs font-medium text-secondary-foreground">
+                {opt.id === '13'
+                  ? 'Confirmed planning baseline: 13 travelers. This is no longer an open vote.'
+                  : 'Not selected — the trip is currently planned around 13 travelers.'}
+              </p>
+            ) : (
+              <VoteControls itemId={opt.voteId ?? decisionOptionVoteId(decision.id, opt.id)} />
+            )}
           </div>
         ))}
       </div>

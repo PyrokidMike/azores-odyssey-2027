@@ -137,7 +137,7 @@ export const DECISIONS: Decision[] = [
   {
     id: 'headcount',
     title: 'Headcount',
-    question: 'How many travelers do we plan around?',
+    question: 'Planning baseline: how many travelers are we organizing for?',
     notes:
       '13 requires scarce large villas, likely 3 vehicles, early restaurant reservations, and more careful group-capacity planning. 9 makes multi-island logistics much easier.',
     options: [
