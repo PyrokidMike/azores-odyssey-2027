@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
+import { auth } from '@/lib/auth'
 import { PageHeader } from '@/components/page-header'
 import { ResultsView } from '@/components/results-view'
 
@@ -8,7 +11,11 @@ export const metadata: Metadata = {
     'Private admin view of votes saved in this browser, ranked by net enthusiasm across decisions and activities.',
 }
 
-export default function ResultsPage() {
+export default async function ResultsPage() {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) redirect('/sign-in')
+  if (session.user.email.toLowerCase() !== 'admin@test.com') redirect('/')
+
   return (
     <>
       <PageHeader

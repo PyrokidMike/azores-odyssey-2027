@@ -7,13 +7,15 @@ import { Menu, X, UserRound, Compass } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { usePlanning } from '@/components/planning-provider'
+import { useSession, signOut } from '@/lib/auth-client'
+
+const ADMIN_EMAIL = 'admin@test.com'
 
 const NAV = [
   { href: '/', label: 'Overview' },
   { href: '/decisions', label: 'Group Decisions' },
   { href: '/activities', label: 'Activity Explorer' },
   { href: '/concepts', label: 'Island Concepts' },
-  { href: '/results', label: 'Admin Dashboard' },
   { href: '/accommodation', label: 'Accommodation' },
 ]
 
@@ -21,6 +23,11 @@ export function SiteNav() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const { displayName, openNamePrompt } = usePlanning()
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.email?.toLowerCase() === ADMIN_EMAIL
+  const visibleNav = isAdmin
+    ? [...NAV, { href: '/admin', label: 'Admin Dashboard' }]
+    : NAV
 
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href)
@@ -43,7 +50,7 @@ export function SiteNav() {
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-          {NAV.map((item) => (
+          {visibleNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -68,6 +75,22 @@ export function SiteNav() {
             <UserRound className="size-3.5" aria-hidden="true" />
             {displayName ?? 'Set your name'}
           </button>
+          {session?.user ? (
+            <button
+              type="button"
+              onClick={() => signOut({ fetchOptions: { onSuccess: () => window.location.reload() } })}
+              className="hidden rounded-full border border-primary-foreground/20 px-3 py-1.5 text-xs font-medium text-primary-foreground/85 transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground sm:inline-flex"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/sign-in"
+              className="hidden rounded-full border border-primary-foreground/20 px-3 py-1.5 text-xs font-medium text-primary-foreground/85 transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground sm:inline-flex"
+            >
+              Sign in
+            </Link>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -87,7 +110,7 @@ export function SiteNav() {
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">
-            {NAV.map((item) => (
+            {visibleNav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -103,6 +126,28 @@ export function SiteNav() {
                 </Link>
               </li>
             ))}
+            <li>
+              {session?.user ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false)
+                    signOut({ fetchOptions: { onSuccess: () => window.location.reload() } })
+                  }}
+                  className="mt-1 flex w-full items-center gap-2 rounded-md border border-primary-foreground/20 px-3 py-3 text-sm font-medium text-primary-foreground/85"
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  onClick={() => setOpen(false)}
+                  className="mt-1 flex w-full items-center rounded-md border border-primary-foreground/20 px-3 py-3 text-sm font-medium text-primary-foreground/85"
+                >
+                  Sign in
+                </Link>
+              )}
+            </li>
             <li>
               <button
                 type="button"
