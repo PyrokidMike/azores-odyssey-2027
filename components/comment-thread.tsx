@@ -113,8 +113,7 @@ export function CommentThread({ threadId }: { threadId: string }) {
           )}
 
           <p className="rounded-md bg-secondary/70 px-3 py-2 text-[0.72rem] leading-relaxed text-secondary-foreground/80">
-            Prototype: saved only in this browser. Shared comments will be enabled later with
-            Supabase.
+Notes are saved to your account and shared with the planning group.
           </p>
         </div>
       )}

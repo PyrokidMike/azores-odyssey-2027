@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ResultsPage() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) redirect('/sign-in')
-  if (session.user.email.toLowerCase() !== 'admin@test.com') redirect('/')
+  if (session.user.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) redirect('/')
 
   return (
     <>

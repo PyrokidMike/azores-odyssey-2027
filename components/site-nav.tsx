@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { usePlanning } from '@/components/planning-provider'
 import { useSession, signOut } from '@/lib/auth-client'
 
-const ADMIN_EMAIL = 'admin@test.com'
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase() ?? 'admin@test.com'
 
 const NAV = [
   { href: '/', label: 'Overview' },

@@ -172,10 +172,7 @@ export function ResultsView() {
   return (
     <div>
       <div className="rounded-2xl border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-foreground/80">
-        <strong>Admin view — prototype.</strong> These tallies only reflect votes saved in{' '}
-        <strong>this browser</strong>. Family votes and comments are private to each person&apos;s
-        device and are <strong>not shared or combined yet</strong>. A real shared tally will arrive
-        with the Supabase backend.
+        <strong>Private admin view.</strong> These tallies reflect votes, notes, tasks, and contributions saved by authenticated users in the shared planning database.
       </div>
 
       <Section

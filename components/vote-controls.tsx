@@ -72,8 +72,8 @@ export function VoteControls({
       </div>
       <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
         {total > 0
-          ? `${total} ${total === 1 ? 'vote' : 'votes'} saved on this device only`
-          : 'Prototype — votes are saved on this device only'}
+          ? `${total} ${total === 1 ? 'vote' : 'votes'} saved to your account`
+          : 'Choose an option to save your vote to your account'}
       </p>
     </div>
   )

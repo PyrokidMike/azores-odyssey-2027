@@ -8,8 +8,7 @@ export function SiteFooter() {
           and embedded in the app — nothing here is fetched from the web or generated live.
         </p>
         <p className="mt-4 text-xs text-primary-foreground/50">
-          Prototype (v1): your votes and comments are saved only in this browser. Shared
-          comments will be enabled later with Supabase.
+          Your votes, notes, and planning contributions are saved to your account and available when you return.
         </p>
       </div>
     </footer>
