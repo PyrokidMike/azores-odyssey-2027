@@ -60,7 +60,15 @@ export function DecisionCard({ decision }: { decision: Decision }) {
       </div>
 
       <div className="space-y-3">
-        {decision.options.map((opt) => (
+        {decision.id === 'pico' ? (
+          <div className="rounded-xl border border-border bg-background p-4">
+            <VoteControls
+              itemId={decision.id}
+              optionLabels={{ must: 'I am committed', interested: 'I might climb', no: 'I will not climb' }}
+              allowedValues={['must', 'interested', 'no']}
+            />
+          </div>
+        ) : decision.options.map((opt) => (
           <div key={opt.id} className="rounded-xl border border-border bg-background p-4">
             <div className="mb-3">
               <div className="flex flex-wrap items-center gap-2">

@@ -16,10 +16,12 @@ export function VoteControls({
   itemId,
   label,
   optionLabels,
+  allowedValues,
 }: {
   itemId: string
   label?: string
   optionLabels?: Partial<Record<VoteValue, string>>
+  allowedValues?: VoteValue[]
 }) {
   const { getMyVote, getVotes, castVote } = usePlanning()
   const myVote = getMyVote(itemId)
@@ -38,7 +40,7 @@ export function VoteControls({
         role="group"
         aria-label={label ? `Vote: ${label}` : 'Vote'}
       >
-        {VOTE_OPTIONS.map((opt) => {
+        {VOTE_OPTIONS.filter((opt) => !allowedValues || allowedValues.includes(opt.value)).map((opt) => {
           const active = myVote === opt.value
           const color = VOTE_COLOR[opt.value]
           const count = Object.values(votes).filter((v) => v === opt.value).length
