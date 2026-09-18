@@ -1,6 +1,6 @@
 'use client'
 
-import { Info } from 'lucide-react'
+import { ExternalLink, Info } from 'lucide-react'
 import {
   type Decision,
   decisionOptionVoteId,
@@ -21,9 +21,22 @@ export function DecisionCard({ decision }: { decision: Decision }) {
         </h3>
       </header>
 
-      <div className="flex gap-2.5 rounded-xl bg-secondary/60 p-3.5">
-        <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-        <p className="text-sm leading-relaxed text-secondary-foreground/85">{decision.notes}</p>
+      <div className="space-y-3 rounded-xl bg-secondary/60 p-3.5">
+        <div className="flex gap-2.5">
+          <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <p className="text-sm leading-relaxed text-secondary-foreground/85">{decision.notes}</p>
+        </div>
+        {decision.sourceLink && (
+          <a
+            href={decision.sourceLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:border-accent hover:text-accent"
+          >
+            <ExternalLink className="size-4" aria-hidden="true" />
+            Read the practical details
+          </a>
+        )}
       </div>
 
       <div className="space-y-3">
@@ -42,7 +55,10 @@ export function DecisionCard({ decision }: { decision: Decision }) {
                 <p className="mt-0.5 text-sm text-muted-foreground">{opt.detail}</p>
               )}
             </div>
-            <VoteControls itemId={opt.voteId ?? decisionOptionVoteId(decision.id, opt.id)} />
+            <VoteControls
+              itemId={opt.voteId ?? decisionOptionVoteId(decision.id, opt.id)}
+              optionLabels={decision.voteLabels}
+            />
           </div>
         ))}
       </div>

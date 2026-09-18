@@ -15,9 +15,11 @@ const VOTE_COLOR: Record<VoteValue, string> = {
 export function VoteControls({
   itemId,
   label,
+  optionLabels,
 }: {
   itemId: string
   label?: string
+  optionLabels?: Partial<Record<VoteValue, string>>
 }) {
   const { getMyVote, getVotes, castVote } = usePlanning()
   const myVote = getMyVote(itemId)
@@ -62,7 +64,7 @@ export function VoteControls({
                   : 'border-border bg-background text-foreground/75 hover:border-foreground/25 hover:bg-muted',
               )}
             >
-              <span>{opt.label}</span>
+              <span>{optionLabels?.[opt.value] ?? opt.label}</span>
               {count > 0 && (
                 <span className="text-[0.68rem] font-semibold opacity-70">{count}</span>
               )}

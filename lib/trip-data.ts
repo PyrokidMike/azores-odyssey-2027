@@ -117,6 +117,8 @@ export interface Decision {
   options: DecisionOption[]
   /** Current planning baseline; this does not replace family voting. */
   baselineOptionId?: string
+  sourceLink?: string
+  voteLabels?: Partial<Record<VoteValue, string>>
 }
 
 export interface IslandConcept {
@@ -139,7 +141,9 @@ export const DECISIONS: Decision[] = [
     title: 'Timing',
     question: 'Which part of June works best?',
     notes:
-      'Early June usually means lighter crowds and strong whale season. Mid-June may align with Vila Franca seasonal opening. Late June is needed for Terceira’s Sanjoaninas festival but brings more crowds and festival traffic.',
+      'Down and dirty: early June is the simplest default for whale watching and lighter crowds. Mid-June may be best if Vila Franca opens. Late June is only worth it if Sanjoaninas is a priority; expect festival crowds, higher demand, and less flexible transport. Pick the dates that match the experience you actually want, not just the cheapest flights.',
+    sourceLink: 'https://www.visitazores.com/en/experiences/events',
+    voteLabels: { must: 'Best fit', interested: 'Could work', skip: 'No preference', no: 'Not available' },
     options: [
       { id: 'early', label: 'Early June', detail: 'Lighter crowds, strong whale season' },
       { id: 'mid', label: 'Mid-June', detail: 'May align with Vila Franca opening' },
@@ -151,7 +155,9 @@ export const DECISIONS: Decision[] = [
     title: 'Trip length',
     question: 'How many nights?',
     notes:
-      '5–7 nights keep us on a single island (São Miguel). 11 nights should prioritize São Miguel or São Miguel + one second island. 13 nights can responsibly support a deeper second island, or a more ambitious expedition.',
+      'Down and dirty: 5 nights means one island and a tight schedule. 7 nights gives São Miguel room to breathe. 11 nights can support one additional island without turning the trip into transfers. 13 nights is the point where a more ambitious multi-island route becomes realistic. More nights add cost, luggage moves, and travel days as well as experiences.',
+    sourceLink: 'https://www.visitazores.com/en/plan-your-trip/getting-around',
+    voteLabels: { must: 'My preference', interested: 'I could do this', skip: 'No preference', no: 'Does not work' },
     options: [
       { id: '5', label: '5 nights', detail: 'Short single-island trip — São Miguel only' },
       { id: '7', label: '7 nights', detail: 'A relaxed São Miguel week with breathing room' },
@@ -164,7 +170,9 @@ export const DECISIONS: Decision[] = [
     title: 'Mt. Pico participation',
     question: 'Where do you stand on the Mount Pico climb?',
     notes:
-      'Mount Pico is a serious summit day requiring official reservation, weather flexibility, high fitness, and a recovery day. It should only drive the itinerary if there is a committed subgroup.',
+      'Down and dirty: this is not a casual walk. The summit is a long, steep, exposed day with a guide, a reservation, suitable fitness, weather flexibility, and a recovery day. The climb can be cancelled by conditions, so it should not dictate everyone’s itinerary unless a committed subgroup is large enough to justify the island transfer and buffer day.',
+    sourceLink: 'https://montanhapico.pt/en/mountain/',
+    voteLabels: { must: 'I am committed', interested: 'I may join', skip: 'I will support others', no: 'I will not climb' },
     options: [
       { id: 'committed', label: 'I am committed to climbing' },
       { id: 'might', label: 'I might climb' },
@@ -176,7 +184,9 @@ export const DECISIONS: Decision[] = [
     title: 'Island concept',
     question: 'Which island concept should we build the trip around?',
     notes:
-      'This is the itinerary’s backbone — it sets how many transfer days we accept and which signature experiences are on the table. See the Island Concepts page for the full detail; votes here and there are the same.',
+      'Down and dirty: choose the route before pricing lodging. São Miguel only is the easiest and richest base. Adding Terceira or Faial/Pico adds transfer time, packing, weather risk, and cost—but unlocks specific experiences. The maximum route is only sensible with enough nights and a group willing to spend multiple days moving between islands.',
+    sourceLink: '/concepts',
+    voteLabels: { must: 'My first choice', interested: 'I would consider it', skip: 'No strong view', no: 'Not for me' },
     options: [
       {
         id: 'saomiguel-only',
@@ -209,7 +219,9 @@ export const DECISIONS: Decision[] = [
     title: 'Priority tradeoff',
     question: 'If we must choose a character for the trip, which one?',
     notes:
-      'This tradeoff shapes island choice and pacing. It is the single most useful signal for narrowing the itinerary.',
+      'Down and dirty: this is the tie-breaker. Pick the experience you would be most disappointed to miss. Caves and culture favor Terceira; volcanoes and vineyards favor Faial/Pico; water and adventure favor a slower São Miguel plan; maximum variety means accepting more transfers and less downtime.',
+    sourceLink: '/activities',
+    voteLabels: { must: 'Top priority', interested: 'Strong interest', skip: 'Not a priority', no: 'Please avoid' },
     options: [
       { id: 'caves', label: 'Caves + culture + Sanjoaninas' },
       { id: 'volcanoes', label: 'Volcanoes + vineyards + Mount Pico' },
