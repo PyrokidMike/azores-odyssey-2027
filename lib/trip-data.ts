@@ -115,6 +115,8 @@ export interface Decision {
   question: string
   notes: string
   options: DecisionOption[]
+  /** Current planning baseline; this does not replace family voting. */
+  baselineOptionId?: string
 }
 
 export interface IslandConcept {
@@ -142,6 +144,7 @@ export const DECISIONS: Decision[] = [
       { id: '9', label: '9 travelers', detail: 'Easier multi-island logistics and lodging' },
       { id: '13', label: '13 travelers', detail: 'Full group — needs scarce large villas and 3 vehicles' },
     ],
+    baselineOptionId: '13',
   },
   {
     id: 'timing',

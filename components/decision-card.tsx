@@ -30,7 +30,14 @@ export function DecisionCard({ decision }: { decision: Decision }) {
         {decision.options.map((opt) => (
           <div key={opt.id} className="rounded-xl border border-border bg-background p-4">
             <div className="mb-3">
-              <p className="font-medium text-foreground">{opt.label}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="font-medium text-foreground">{opt.label}</p>
+                {decision.baselineOptionId === opt.id && (
+                  <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide text-accent">
+                    Current baseline
+                  </span>
+                )}
+              </div>
               {opt.detail && (
                 <p className="mt-0.5 text-sm text-muted-foreground">{opt.detail}</p>
               )}

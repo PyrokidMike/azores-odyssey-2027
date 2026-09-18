@@ -71,9 +71,9 @@ export default function OverviewPage() {
             Azores Odyssey 2027
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/80">
-            A shared planning room for three families. Explore hand-curated activities across
-            four islands, weigh the big decisions, and vote your way to one itinerary everyone
-            is excited about.
+            A shared planning room for three families and a 13-person expedition baseline. Explore
+            hand-curated activities across four islands, weigh the big decisions, and vote your way
+            to one itinerary everyone is excited about.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

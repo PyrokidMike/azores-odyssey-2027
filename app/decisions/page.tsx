@@ -15,7 +15,7 @@ export default function DecisionsPage() {
       <PageHeader
         eyebrow="Decide together"
         title="Group Decisions"
-        intro="These six choices shape everything else — islands, pacing, and cost. Cast your vote on each option and leave a comment. Your votes are a prototype, saved in this browser only and never shared yet."
+        intro="These six choices shape everything else — islands, pacing, and cost. We are planning around 13 travelers for now; cast your vote on each option and leave a comment so the group can confirm or change that baseline. Shared votes are saved to your account."
       />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="grid gap-6">
