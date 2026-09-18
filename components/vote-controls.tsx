@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 const VOTE_COLOR: Record<VoteValue, string> = {
   must: 'oklch(0.82 0.24 130)',
   interested: 'oklch(0.82 0.2 195)',
-  skip: 'oklch(0.88 0.2 100)',
+  skip: 'oklch(0.72 0.02 260)',
   no: 'oklch(0.78 0.25 330)',
 }
 
