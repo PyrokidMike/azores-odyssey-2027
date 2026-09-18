@@ -6,11 +6,10 @@ import { usePlanning } from '@/components/planning-provider'
 import { cn } from '@/lib/utils'
 
 const VOTE_COLOR: Record<VoteValue, string> = {
-  // Distinct, grounded colors: stronger than the neutral state without becoming neon.
-  must: 'oklch(0.42 0.12 155)',
-  interested: 'oklch(0.44 0.13 245)',
-  skip: 'oklch(0.54 0.13 72)',
-  no: 'oklch(0.46 0.13 25)',
+  must: 'oklch(0.82 0.24 130)',
+  interested: 'oklch(0.82 0.2 195)',
+  skip: 'oklch(0.88 0.2 100)',
+  no: 'oklch(0.78 0.25 330)',
 }
 
 export function VoteControls({
@@ -45,8 +44,8 @@ export function VoteControls({
             ? {
                 backgroundColor: color,
                 borderColor: color,
-                color: 'white',
-                boxShadow: `0 3px 0 color-mix(in oklab, ${color} 72%, var(--charcoal))`,
+                color: 'var(--charcoal)',
+                boxShadow: `0 3px 0 color-mix(in oklab, ${color} 65%, var(--charcoal))`,
               }
             : {}
           return (
