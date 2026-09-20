@@ -20,9 +20,9 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: 'Azores Odyssey 2027 — The Family Expedition',
+  title: 'Azores Odyssey 2027 — Group Expedition Planner',
   description:
-    'A curated group-decision and voting tool for three families planning an Azores expedition in June 2027. Explore, vote, and build the trip together.',
+    'A collaborative group expedition planner for exploring, comparing, and shaping an Azores trip together in June 2027.',
   generator: 'v0.app',
   manifest: '/manifest.json',
   applicationName: 'Azores Odyssey 2027',

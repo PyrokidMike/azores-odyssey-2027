@@ -48,7 +48,7 @@ const FRAMING = [
   {
     icon: CalendarRange,
     title: 'June 2027 window',
-    body: 'Three families coordinating a single expedition. Timing choices ripple through crowds, whale season, and the Sanjoaninas festival.',
+    body: 'A group coordinating one expedition. Timing choices ripple through crowds, whale season, and the Sanjoaninas festival.',
   },
   {
     icon: ShieldCheck,
@@ -73,7 +73,7 @@ export default function OverviewPage() {
       <section className="topo-texture-strong relative overflow-hidden border-b border-border bg-navy text-primary-foreground">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-azure">
-            Welcome to the family planning room · June 2027
+            Welcome to the group expedition planning room · June 2027
           </p>
           <h1 className="mt-4 max-w-3xl text-balance font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
             Azores Odyssey 2027
@@ -141,7 +141,7 @@ export default function OverviewPage() {
 
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
         <h2 className="font-serif text-2xl font-semibold text-foreground">Where to next</h2>
-        <p className="mt-1 text-muted-foreground">Four rooms, one shared expedition.</p>
+        <p className="mt-1 text-muted-foreground">Four planning rooms, one shared expedition.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {QUICK_LINKS.map((link) => (
             <Link
