@@ -76,7 +76,7 @@ export default function OverviewPage() {
             Welcome to the group expedition planning room · June 2027
           </p>
           <h1 className="mt-4 max-w-3xl text-balance font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-            Azores Odyssey 2027
+            Group Expedition Planner: Azores 2027
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/80">
             Explore the hand-curated activities across four islands, save your choices as you go,
