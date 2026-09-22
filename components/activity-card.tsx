@@ -26,6 +26,7 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
   const [request, setRequest] = useState('')
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [reportSent, setReportSent] = useState(false)
   const { data: session } = useSession()
   const categoryLabel = CATEGORIES.find((c) => c.id === activity.category)?.label ?? ''
 
@@ -33,6 +34,15 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
     if (!session?.user) return
     void saveActivityProgress(activity.id).catch(() => undefined)
   }, [activity.id, session?.user])
+
+  async function reportDeadLink() {
+    setReportSent(true)
+    try {
+      await addContribution({ kind: 'link', title: `Dead link: ${activity.name}`, body: `Please review this provider link: ${activity.link}`, itemRef: activity.id, itemLabel: activity.name })
+    } catch {
+      setReportSent(false)
+    }
+  }
 
   async function submitRequest() {
     if (!request.trim()) return
@@ -95,6 +105,12 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
           <ExternalLink className="size-4" aria-hidden="true" />
           View provider information
         </a>
+        <a
+          href="#activity-explorer"
+          className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-accent hover:text-accent"
+        >
+          Back to planner
+        </a>
         <button
           type="button"
           onClick={() => setRequestOpen((open) => !open)}
@@ -103,6 +119,14 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
         >
           <MessageSquarePlus className="size-4" aria-hidden="true" />
           Request more information
+        </button>
+        <button
+          type="button"
+          onClick={reportDeadLink}
+          disabled={reportSent}
+          className="inline-flex min-h-11 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:no-underline"
+        >
+          {reportSent ? 'Reported to admin' : 'Report dead link'}
         </button>
       </div>
 
