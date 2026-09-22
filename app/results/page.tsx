@@ -8,7 +8,7 @@ import { ResultsView } from '@/components/results-view'
 export const metadata: Metadata = {
   title: 'Admin Dashboard — Azores Odyssey 2027',
   description:
-    'Private admin view of votes saved in this browser, ranked by net enthusiasm across decisions and activities.',
+    'Private admin view of shared group votes, comments, tasks, and contributions.',
 }
 
 export default async function ResultsPage() {
@@ -21,7 +21,7 @@ export default async function ResultsPage() {
       <PageHeader
         eyebrow="Admin only"
         title="Admin Dashboard"
-        intro="A private tally of the votes saved in this browser, ranked by net enthusiasm. Family votes stay on each person's own device until the shared backend is switched on."
+        intro="A private view of shared group votes, ranked by support. Use the admin control room for recent comments, follow-ups, research notes, and reported links."
       />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <ResultsView />
