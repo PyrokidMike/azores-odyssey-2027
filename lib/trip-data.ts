@@ -402,10 +402,10 @@ export const ACTIVITIES: Activity[] = [
     groupFit: 'Whole group',
     fitNote: 'Reserve a large table in advance.',
     intensity: 'Easy',
-    notes: 'Underground-cooked cozido. Reserve a large table in advance.',
+    notes: 'Cozido das Furnas is slow-cooked for hours underground using volcanic heat. The cooking site is near Furnas Lake, and restaurants need advance notice for a larger group.',
     urgency: 'Book early',
     status: 'Confirmed research',
-    link: 'https://www.visitazores.com/en',
+    link: 'https://turismo.azores.gov.pt/pin/campo-fumarolico-da-lagoa-das-furnas/',
   },
   {
     id: 'terra-nostra',
