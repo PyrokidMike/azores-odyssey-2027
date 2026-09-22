@@ -145,7 +145,7 @@ export const DECISIONS: Decision[] = [
     question: 'Which part of June works best?',
     notes:
       'Early June is the simplest default for whale watching and lighter crowds. Mid-June may be best if Vila Franca opens. Late June is only worth it if Sanjoaninas is a priority; expect festival crowds, higher demand, and less flexible transport. Pick the dates that match the experience you actually want, not just the cheapest flights.',
-    sourceLink: 'https://www.visitazores.com/en/experiences/whale-watching-and-dolphin-watching',
+    sourceLink: 'https://visitazores.com/en/experiences',
     voteLabels: { must: 'Best fit', interested: 'Could work', skip: 'No preference', no: 'Not available' },
     keyPoints: ['Early June usually gives calmer logistics and strong whale activity.', 'Mid-June may unlock Vila Franca do Campo, depending on the seasonal opening.', 'Late June brings Sanjoaninas energy but also busier roads, lodging, and restaurants.'],
     experiences: ['Whale watching and ocean days', 'Seasonal festivals and local food', 'More relaxed sightseeing with fewer crowds'],
@@ -162,7 +162,7 @@ export const DECISIONS: Decision[] = [
     question: 'How many nights?',
     notes:
       'Five nights means one island and a tight schedule. Seven nights gives São Miguel room to breathe. Eleven or thirteen nights can support one additional island, but add cost, luggage moves, and travel days as well as experiences.',
-    sourceLink: 'https://www.visitazores.com/en/plan-your-trip/getting-around',
+    sourceLink: 'https://sata.pt/en',
     voteLabels: { must: 'My preference', interested: 'I could do this', skip: 'No preference', no: 'Does not work' },
     keyPoints: ['Five nights is a focused São Miguel trip with little room for weather changes.', 'Seven nights gives the main island breathing room without overcomplicating travel.', 'Eleven or thirteen nights make a second island more realistic, but add travel days and cost.'],
     experiences: ['Hot springs, crater lakes, coastal drives, and food on São Miguel', 'A second island with a distinct landscape and culture', 'More buffer for weather-dependent activities'],
@@ -180,7 +180,7 @@ export const DECISIONS: Decision[] = [
     question: 'Where do you stand on the Mount Pico climb?',
     notes:
       'This is not a casual walk. The summit is a long, steep, exposed day with a guide, a reservation, suitable fitness, weather flexibility, and a recovery day. The climb can be cancelled by conditions, so it should not dictate everyone’s itinerary unless a committed subgroup is large enough to justify the island transfer and buffer day.',
-    sourceLink: 'https://montanhapico.pt/en/mountain/',
+    sourceLink: 'https://montanhapico.azores.gov.pt/?lang=en',
     voteLabels: { must: 'I am committed', interested: 'I may join', skip: 'I will support others', no: 'I will not climb' },
     keyPoints: ['This is a guided, strenuous summit day—not a casual hike.', 'Weather can cancel or delay the climb, so flexibility is essential.', 'Non-climbers need a worthwhile alternative while the climbing group is away.'],
     experiences: ['A demanding volcanic summit with wide Atlantic views', 'A shared achievement for a committed subgroup', 'A recovery day and slower pace afterward'],
@@ -560,7 +560,7 @@ export const ACTIVITIES: Activity[] = [
       'Current examples cite age 6+, 120 cm+, 20 kg+, swimming ability and a 14-person group cap. Confirm exact 2027 operator policy.',
     urgency: 'Book early',
     status: 'Confirmed research',
-    link: 'https://www.manawa.com/en-GB/activity/azores/sao-miguel/canyoning/discover-canyoning-at-ribeira-dos-caldeiroes-in-sao-miguel-azo',
+    link: 'https://www.azoreanblueberry.com/en/experience/canyoning-adventure-salto-do-cabrito',
   },
   {
     id: 'canyoning-cabrito',
