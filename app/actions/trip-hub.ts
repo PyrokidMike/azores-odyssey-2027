@@ -37,9 +37,16 @@ export async function deleteComment(id: number, threadId?: string, body?: string
     : []
 
   if (deleted.length === 0 && body?.trim()) {
-    deleted = await db.delete(comment)
+    const matches = await db.select({ id: comment.id })
+      .from(comment)
       .where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, body.trim())))
-      .returning({ id: comment.id })
+      .orderBy(desc(comment.id))
+      .limit(1)
+    if (matches[0]) {
+      deleted = await db.delete(comment)
+        .where(eq(comment.id, matches[0].id))
+        .returning({ id: comment.id })
+    }
   }
 
   if (deleted.length === 0) throw new Error('Comment was not found or was already deleted.')
