@@ -28,16 +28,12 @@ export function CommentThread({ threadId }: { threadId: string }) {
     setText('')
   }
 
-  const removeComment = async (id: string) => {
-    if (!window.confirm('Delete this comment?')) return
+  const removeComment = async (id: string, body: string) => {
+    if (!window.confirm('Delete this Agent Max reply?')) return
     setDeleteError(null)
     const numericId = Number(id)
-    if (!Number.isInteger(numericId) || numericId <= 0) {
-      setDeleteError('This comment could not be identified. Refresh the page and try again.')
-      return
-    }
     try {
-      await deleteComment(numericId)
+      await deleteComment(numericId, threadId, body)
       window.location.reload()
     } catch (error) {
       setDeleteError(error instanceof Error ? error.message : 'Comment deletion failed.')
@@ -69,7 +65,7 @@ export function CommentThread({ threadId }: { threadId: string }) {
                 <li key={c.id} className="rounded-lg bg-muted/60 px-2.5 py-1.5">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground">{c.author}</span>
-                    <div className="flex items-center gap-2"><span className="text-[0.7rem] text-muted-foreground">{timeAgo(c.ts)}</span>{c.author === 'Agent Max' && <button type="button" onClick={() => removeComment(c.id)} className="text-[0.7rem] font-semibold text-destructive hover:underline" aria-label="Delete Agent Max comment"><Trash2 className="size-3" aria-hidden="true" /></button>}</div>
+                    <div className="flex items-center gap-2"><span className="text-[0.7rem] text-muted-foreground">{timeAgo(c.ts)}</span>{c.author === 'Agent Max' && <button type="button" onClick={() => removeComment(c.id, c.text)} className="text-[0.7rem] font-semibold text-destructive hover:underline" aria-label="Delete Agent Max comment"><Trash2 className="size-3" aria-hidden="true" /></button>}</div>
                   </div>
                   <p className="mt-0.5 text-[0.8rem] leading-relaxed text-foreground/85">{c.text}</p>
                 </li>
