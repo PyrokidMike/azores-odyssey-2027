@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquare, Send, ChevronDown } from 'lucide-react'
+import { MessageSquare, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePlanning } from '@/components/planning-provider'
-import { cn } from '@/lib/utils'
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts
@@ -21,42 +20,25 @@ export function CommentThread({ threadId }: { threadId: string }) {
   const { getComments, addComment, displayName, openNamePrompt } = usePlanning()
   const comments = getComments(threadId)
   const [text, setText] = useState('')
-  const [expanded, setExpanded] = useState(false)
-
-  const open = expanded || comments.length === 0
-
   const submit = () => {
     if (!text.trim()) return
     addComment(threadId, text)
     setText('')
-    setExpanded(true)
   }
 
   return (
     <div className="border-t border-border pt-3">
-      <button
-        type="button"
-        onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 text-sm font-medium text-foreground"
-        aria-expanded={open}
-      >
-        <span className="flex items-center gap-2">
-          <MessageSquare className="size-4 text-muted-foreground" aria-hidden="true" />
-          Comments
-          {comments.length > 0 && (
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
-              {comments.length}
-            </span>
-          )}
-        </span>
-        <ChevronDown
-          className={cn('size-4 text-muted-foreground transition-transform', open && 'rotate-180')}
-          aria-hidden="true"
-        />
-      </button>
+      <div className="flex w-full items-center gap-2 text-sm font-medium text-foreground">
+        <MessageSquare className="size-4 text-muted-foreground" aria-hidden="true" />
+        Comments
+        {comments.length > 0 && (
+          <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
+            {comments.length}
+          </span>
+        )}
+      </div>
 
-      {open && (
-        <div className="mt-3 space-y-3">
+      <div className="mt-3 space-y-3">
           {comments.length > 0 && (
             <ul className="space-y-2.5">
               {comments.map((c) => (
@@ -116,7 +98,6 @@ export function CommentThread({ threadId }: { threadId: string }) {
 Notes are saved to your account and shared with the planning group.
           </p>
         </div>
-      )}
     </div>
   )
 }
