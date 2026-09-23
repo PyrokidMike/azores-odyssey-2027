@@ -39,13 +39,13 @@ export async function deleteComment(id: number, threadId?: string, body?: string
 
   if (deletedComments.length === 0 && cleanBody) {
     deletedComments = await db.delete(comment)
-      .where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, cleanBody)))
+      .where(eq(comment.body, cleanBody))
       .returning({ id: comment.id })
   }
 
   const deletedUpdates = cleanBody
     ? await db.delete(contribution)
-        .where(and(eq(contribution.authorName, 'Agent Max'), eq(contribution.body, cleanBody), eq(contribution.title, 'Agent Max reply')))
+        .where(and(eq(contribution.body, cleanBody), eq(contribution.title, 'Agent Max reply')))
         .returning({ id: contribution.id })
     : []
 
