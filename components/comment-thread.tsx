@@ -21,6 +21,7 @@ export function CommentThread({ threadId }: { threadId: string }) {
   const { getComments, addComment, displayName, openNamePrompt } = usePlanning()
   const comments = getComments(threadId)
   const [text, setText] = useState('')
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const submit = () => {
     if (!text.trim()) return
     addComment(threadId, text)
@@ -29,8 +30,18 @@ export function CommentThread({ threadId }: { threadId: string }) {
 
   const removeComment = async (id: string) => {
     if (!window.confirm('Delete this comment?')) return
-    await deleteComment(Number(id))
-    window.location.reload()
+    setDeleteError(null)
+    const numericId = Number(id)
+    if (!Number.isInteger(numericId) || numericId <= 0) {
+      setDeleteError('This comment could not be identified. Refresh the page and try again.')
+      return
+    }
+    try {
+      await deleteComment(numericId)
+      window.location.reload()
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : 'Comment deletion failed.')
+    }
   }
 
   return (
@@ -51,6 +62,7 @@ export function CommentThread({ threadId }: { threadId: string }) {
               No comments yet. Add the first note for the group.
             </p>
           )}
+          {deleteError && <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">{deleteError}</p>}
           {comments.length > 0 && (
             <ul className="space-y-2.5">
               {comments.map((c) => (
