@@ -1,6 +1,6 @@
 'use server'
 
-import { and, asc, desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, like } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/lib/auth'
@@ -37,9 +37,10 @@ export async function deleteComment(id: number, threadId?: string, body?: string
     : []
 
   if (deleted.length === 0 && body?.trim()) {
+    const prefix = body.trim().slice(0, 80)
     const matches = await db.select({ id: comment.id })
       .from(comment)
-      .where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, body.trim())))
+      .where(and(eq(comment.authorName, 'Agent Max'), like(comment.body, `${prefix}%`)))
       .orderBy(desc(comment.id))
       .limit(1)
     if (matches[0]) {
