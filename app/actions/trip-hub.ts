@@ -33,14 +33,20 @@ export async function deleteComment(id: number, threadId?: string, body?: string
   if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
 
   const cleanBody = body?.trim()
-  const deletedComments = cleanBody
-    ? await db.delete(comment).where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, cleanBody))).returning({ id: comment.id })
-    : Number.isInteger(id) && id > 0
-      ? await db.delete(comment).where(eq(comment.id, id)).returning({ id: comment.id })
-      : []
+  let deletedComments = Number.isInteger(id) && id > 0
+    ? await db.delete(comment).where(eq(comment.id, id)).returning({ id: comment.id })
+    : []
+
+  if (deletedComments.length === 0 && cleanBody) {
+    deletedComments = await db.delete(comment)
+      .where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, cleanBody)))
+      .returning({ id: comment.id })
+  }
 
   const deletedUpdates = cleanBody
-    ? await db.delete(contribution).where(and(eq(contribution.authorName, 'Agent Max'), eq(contribution.body, cleanBody), eq(contribution.title, 'Agent Max reply'))).returning({ id: contribution.id })
+    ? await db.delete(contribution)
+        .where(and(eq(contribution.authorName, 'Agent Max'), eq(contribution.body, cleanBody), eq(contribution.title, 'Agent Max reply')))
+        .returning({ id: contribution.id })
     : []
 
   if (deletedComments.length === 0 && deletedUpdates.length === 0) throw new Error('Comment was not found or was already deleted.')
