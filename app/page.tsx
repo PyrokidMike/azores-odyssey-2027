@@ -70,7 +70,7 @@ export default function OverviewPage() {
   const recentComments = Object.entries(comments)
     .flatMap(([threadId, entries]) => entries.map((entry) => ({ ...entry, threadId })))
     .sort((a, b) => b.ts - a.ts)
-    .slice(0, 6)
+    .slice(0, 12)
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
@@ -157,7 +157,7 @@ export default function OverviewPage() {
         <div className="mt-5 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3"><h3 className="font-serif text-lg font-semibold">New comments</h3><span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">{recentComments.length}</span></div>
-            <div className="mt-4 space-y-3">{recentComments.map((comment) => <div key={comment.id} className="rounded-xl border border-border/70 bg-background p-3"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-foreground">{comment.author}</p><time className="text-xs text-muted-foreground" dateTime={new Date(comment.ts).toISOString()}>{new Date(comment.ts).toLocaleDateString()}</time></div><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{comment.text}</p><p className="mt-2 text-xs font-medium text-accent">{comment.threadId.replaceAll(':', ' · ')}</p></div>)}{planningReady && recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No new comments yet. Comments added to activities will appear here.</p>}</div>
+            <div className="mt-4 space-y-2">{recentComments.map((comment) => { const activityId = comment.threadId.startsWith('act:') ? comment.threadId.slice(4) : null; return <Link key={comment.id} href={activityId ? `/activities#activity-${activityId}` : '/activities'} className="block rounded-xl border border-border/70 bg-background p-3 transition-colors hover:border-accent hover:bg-accent/5"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-foreground">{comment.author}</p><time className="text-xs text-muted-foreground" dateTime={new Date(comment.ts).toISOString()}>{new Date(comment.ts).toLocaleDateString()}</time></div><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{comment.text}</p><p className="mt-2 text-xs font-medium text-accent">{comment.threadId.replaceAll(':', ' · ')} · View activity</p></Link>})}{planningReady && recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No new comments yet. Comments added to activities will appear here.</p>}</div>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
             <h3 className="font-serif text-lg font-semibold">Planner activity</h3>

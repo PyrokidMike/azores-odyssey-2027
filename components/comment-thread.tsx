@@ -47,12 +47,12 @@ export function CommentThread({ threadId }: { threadId: string }) {
           {comments.length > 0 && (
             <ul className="space-y-2.5">
               {comments.map((c) => (
-                <li key={c.id} className="rounded-lg bg-muted/60 px-3 py-2">
+                <li key={c.id} className="rounded-lg bg-muted/60 px-2.5 py-1.5">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground">{c.author}</span>
                     <span className="text-[0.7rem] text-muted-foreground">{timeAgo(c.ts)}</span>
                   </div>
-                  <p className="mt-0.5 text-sm leading-relaxed text-foreground/85">{c.text}</p>
+                  <p className="mt-0.5 text-[0.8rem] leading-relaxed text-foreground/85">{c.text}</p>
                 </li>
               ))}
             </ul>

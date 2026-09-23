@@ -64,7 +64,7 @@ export function ActivityCard({ activity, reviewed = false }: { activity: Activit
   }
 
   return (
-    <article className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+    <article id={`activity-${activity.id}`} className="scroll-mt-24 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
       <header className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
           {activity.islands.map((i) => (
