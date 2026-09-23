@@ -58,6 +58,14 @@ Interpretation rules:
 
 Return only these sections:
 
+For every item in ACTION ITEMS, INFORMATION THE GROUP NEEDS, BROKEN OR QUESTIONABLE LINKS, and OPEN QUESTIONS, use exactly this metadata format:
+- THREAD: <exact activity/thread ID from the supplied updates>
+- QUESTION BY: <first name only>
+- QUESTION: <exact question or source comment>
+- RESPONSE: <the proposed answer or finding>
+
+Never infer or invent a thread ID. If an item has no exact source thread, write THREAD: UNALIGNED.
+
 ## COUNCIL FLAGS
 - 3–8 bullets with the most material cross-review findings.
 - Identify material disagreement between council perspectives, if any.
