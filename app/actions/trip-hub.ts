@@ -31,10 +31,17 @@ export async function saveVote(itemId: string, choice: string) {
 export async function deleteComment(id: number, threadId?: string, body?: string) {
   const current = await currentUser()
   if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
-  const target = threadId && body
-    ? and(eq(comment.threadId, threadId.trim()), eq(comment.body, body.trim()), eq(comment.authorName, 'Agent Max'))
-    : eq(comment.id, id)
-  const deleted = await db.delete(comment).where(target).returning({ id: comment.id })
+
+  let deleted = Number.isInteger(id) && id > 0
+    ? await db.delete(comment).where(eq(comment.id, id)).returning({ id: comment.id })
+    : []
+
+  if (deleted.length === 0 && body?.trim()) {
+    deleted = await db.delete(comment)
+      .where(and(eq(comment.authorName, 'Agent Max'), eq(comment.body, body.trim())))
+      .returning({ id: comment.id })
+  }
+
   if (deleted.length === 0) throw new Error('Comment was not found or was already deleted.')
   revalidatePath('/')
   revalidatePath('/admin')
