@@ -15,7 +15,9 @@ export function AdminReviewPanel({ items }: { items: ReviewItem[] }) {
   const [result, setResult] = useState('')
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
-  const prompt = `You are reviewing a collaborative trip-planning workspace. Analyze the updates below and return concise sections: ACTION ITEMS (specific task, owner if clear, priority), BROKEN OR QUESTIONABLE LINKS, INFORMATION THE GROUP NEEDS, OPEN QUESTIONS, and a SHORT SUMMARY. Do not make bookings or decisions. Use first names only and do not include last names, email addresses, private profile details, or other identifying information. Preserve source links when they are relevant.\n\nUPDATES:\n${items.map((item) => `[${item.kind}] ${item.title}\nBy: ${firstNameOnly(item.author)}\n${item.detail}\nDate: ${item.createdAt}`).join('\n\n')}`
+  const prompt = `Agent Max, review this new app export with the model council. Return the standard council review ->
+
+You are reviewing a collaborative trip-planning workspace. Analyze the updates below and return concise sections: ACTION ITEMS (specific task, owner if clear, priority), BROKEN OR QUESTIONABLE LINKS, INFORMATION THE GROUP NEEDS, OPEN QUESTIONS, and a SHORT SUMMARY. Do not make bookings or decisions. Use first names only and do not include last names, email addresses, private profile details, or other identifying information. Preserve source links when they are relevant.\n\nUPDATES:\n${items.map((item) => `[${item.kind}] ${item.title}\nBy: ${firstNameOnly(item.author)}\n${item.detail}\nDate: ${item.createdAt}`).join('\n\n')}`
 
   const CopyIcon = copied ? Check : Clipboard
 
