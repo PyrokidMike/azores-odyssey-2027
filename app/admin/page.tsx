@@ -38,7 +38,7 @@ export default async function AdminPage() {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
       <AdminReviewPanel items={reviewItems} />
-      <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} />
+      <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} comments={comments.map((item) => ({ id: item.id, threadId: item.threadId, body: item.body, authorName: item.authorName }))} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { label: 'Votes recorded', count: votes.length, detail: 'Group positions saved', icon: Vote, tone: 'bg-cyan-400 text-slate-950' },

@@ -42,7 +42,7 @@ export async function addAdminCommentReply(threadId: string, body: string) {
   if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
   const clean = body.trim()
   if (!clean || clean.length > 2000) throw new Error('Invalid comment')
-  await db.insert(comment).values({ userId: current.id, authorName: current.name, threadId, body: clean })
+  await db.insert(comment).values({ userId: current.id, authorName: 'Agent Max', threadId, body: clean })
   revalidatePath('/admin')
   revalidatePath('/')
   return { ok: true }
