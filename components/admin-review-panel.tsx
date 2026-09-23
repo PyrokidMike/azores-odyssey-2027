@@ -58,11 +58,13 @@ Interpretation rules:
 
 Return only these sections:
 
-For every item in ACTION ITEMS, INFORMATION THE GROUP NEEDS, BROKEN OR QUESTIONABLE LINKS, and OPEN QUESTIONS, use exactly this metadata format:
-- THREAD: <exact activity/thread ID from the supplied updates>
-- QUESTION BY: <first name only>
-- QUESTION: <exact question or source comment>
-- RESPONSE: <the proposed answer or finding>
+For every question asked inside an activity thread, output one complete block with these fields on separate lines. Keep the question and response text intact even when they wrap across multiple lines:
+THREAD: <exact activity/thread ID from the supplied updates>
+QUESTION BY: <first name only>
+QUESTION: <exact question or source comment>
+RESPONSE: <the proposed answer>
+
+For INFORMATION THE GROUP NEEDS, do not invent a question. Output it as a separate group-information item with no thread alignment. For ACTION ITEMS and BROKEN OR QUESTIONABLE LINKS, output them separately and do not present them as visitor questions.
 
 Never infer or invent a thread ID. If an item has no exact source thread, write THREAD: UNALIGNED.
 
