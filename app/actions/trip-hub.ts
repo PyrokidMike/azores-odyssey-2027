@@ -58,6 +58,7 @@ export async function createTask(input: { title: string; detail?: string; assign
   const assignee = input.assigneeId ? (await db.select({ id: user.id, name: user.name }).from(user).where(eq(user.id, input.assigneeId)).limit(1))[0] : undefined
   await db.insert(task).values({ creatorId: current.id, creatorName: current.name, title: input.title.trim(), detail: input.detail?.trim() || null, assigneeId: assignee?.id ?? null, assigneeName: assignee?.name ?? null, dueDate: input.dueDate ? new Date(input.dueDate) : null, itemRef: input.itemRef ?? null, itemLabel: input.itemLabel ?? null })
   revalidatePath('/tasks')
+  revalidatePath('/admin')
   return { ok: true }
 }
 
@@ -97,5 +98,7 @@ export async function addContribution(input: { kind: 'note' | 'link' | 'photo'; 
   const current = await currentUser()
   await db.insert(contribution).values({ userId: current.id, authorName: current.name, kind: input.kind, title: input.title?.trim() || null, body: input.body?.trim() || null, photoPathname: input.photoPathname ?? null, taskId: input.taskId ?? null, itemRef: input.itemRef ?? null, itemLabel: input.itemLabel ?? null })
   revalidatePath('/contributions')
+  revalidatePath('/admin')
+  revalidatePath('/')
   return { ok: true }
 }
