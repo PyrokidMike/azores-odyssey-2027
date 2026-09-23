@@ -42,6 +42,7 @@ interface PlanningContextValue {
   getVotes: (itemId: string) => Record<string, VoteValue>
   /** Cast (or toggle off) a vote. Opens the name prompt if no name is set. */
   castVote: (itemId: string, value: VoteValue) => void
+  comments: Record<string, CommentEntry[]>
   getComments: (threadId: string) => CommentEntry[]
   addComment: (threadId: string, text: string) => void
   /** Name-prompt dialog control. */
@@ -213,6 +214,7 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
         state.displayName ? state.votes[itemId]?.[state.displayName] : undefined,
       getVotes: (itemId) => state.votes[itemId] ?? {},
       castVote,
+      comments: state.comments,
       getComments: (threadId) => state.comments[threadId] ?? [],
       addComment,
       namePromptOpen,

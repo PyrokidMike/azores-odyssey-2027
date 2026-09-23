@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { ACTIVITIES, DECISIONS, ISLAND_CONCEPTS } from '@/lib/trip-data'
 import { useSession } from '@/lib/auth-client'
+import { usePlanning } from '@/components/planning-provider'
 
 const QUICK_LINKS = [
   {
@@ -64,7 +65,12 @@ const FRAMING = [
 
 export default function OverviewPage() {
   const { data: session, isPending } = useSession()
+  const { comments, ready: planningReady } = usePlanning()
   const userName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'there'
+  const recentComments = Object.entries(comments)
+    .flatMap(([threadId, entries]) => entries.map((entry) => ({ ...entry, threadId })))
+    .sort((a, b) => b.ts - a.ts)
+    .slice(0, 6)
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
@@ -136,6 +142,27 @@ export default function OverviewPage() {
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6">
+        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">Live planning pulse</p>
+            <h2 className="mt-1 font-serif text-2xl font-semibold text-foreground">Recent updates</h2>
+            <p className="mt-1 text-muted-foreground">New group input and planning changes to review.</p>
+          </div>
+          <Link href="/admin" className="text-sm font-semibold text-accent hover:underline">Open admin dashboard</Link>
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3"><h3 className="font-serif text-lg font-semibold">New comments</h3><span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">{recentComments.length}</span></div>
+            <div className="mt-4 space-y-3">{recentComments.map((comment) => <div key={comment.id} className="rounded-xl border border-border/70 bg-background p-3"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-foreground">{comment.author}</p><time className="text-xs text-muted-foreground" dateTime={new Date(comment.ts).toISOString()}>{new Date(comment.ts).toLocaleDateString()}</time></div><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{comment.text}</p><p className="mt-2 text-xs font-medium text-accent">{comment.threadId.replaceAll(':', ' · ')}</p></div>)}{planningReady && recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No new comments yet. Comments added to activities will appear here.</p>}</div>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <h3 className="font-serif text-lg font-semibold">Planner activity</h3>
+            <div className="mt-4 space-y-3"><div className="flex items-start gap-3 rounded-xl bg-secondary/50 p-3"><span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-azure/15 text-azure"><Compass className="size-4" aria-hidden="true" /></span><div><p className="text-sm font-semibold">{ACTIVITIES.length} activities available</p><p className="text-xs leading-relaxed text-muted-foreground">Curated across {new Set(ACTIVITIES.flatMap((activity) => activity.islands)).size} islands, with source links and group-fit notes.</p></div></div><div className="flex items-start gap-3 rounded-xl bg-secondary/50 p-3"><span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-azure/15 text-azure"><ShieldCheck className="size-4" aria-hidden="true" /></span><div><p className="text-sm font-semibold">Research-ready link set</p><p className="text-xs leading-relaxed text-muted-foreground">Activity links are available to verify details before the group decides.</p></div></div></div>
+          </div>
         </div>
       </section>
 
