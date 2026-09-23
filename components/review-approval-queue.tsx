@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Check, Pencil, X } from 'lucide-react'
-import { addAdminCommentReply, addContribution, createTask } from '@/app/actions/trip-hub'
+import { addContribution, createTask, publishAgentMaxReply } from '@/app/actions/trip-hub'
 
 type Review = { id: number; createdAt: string; body: string }
 type Comment = { id: number; threadId: string; body: string; authorName: string }
@@ -98,8 +98,7 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
     try {
       if (item.kind === 'question' || item.kind === 'note') {
         if (!item.replyThreadId) throw new Error('No matching comment thread was found. Select a thread before approving this reply.')
-        await addAdminCommentReply(item.replyThreadId, item.text)
-        await addContribution({ kind: 'note', title: 'Agent Max reply', body: item.text, itemLabel: 'Recent update · Agent Max' })
+        await publishAgentMaxReply(item.replyThreadId, item.text)
       } else if (item.kind === 'task') {
         await createTask({ title: item.text, detail: `Approved from AI review · ${item.source}`, itemLabel: 'AI review action item' })
       } else {
