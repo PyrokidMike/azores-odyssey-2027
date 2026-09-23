@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Clipboard, Check, Save, Sparkles } from 'lucide-react'
 import { saveReviewReport } from '@/app/actions/trip-hub'
@@ -12,6 +13,7 @@ function firstNameOnly(name?: string) {
 }
 
 export function AdminReviewPanel({ items }: { items: ReviewItem[] }) {
+  const router = useRouter()
   const [result, setResult] = useState('')
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -95,9 +97,14 @@ ${items.map((item) => `[${item.kind}] ${item.title}\nBy: ${firstNameOnly(item.au
 
   async function saveResult() {
     if (!result.trim()) return
-    await saveReviewReport(result.trim())
-    setSaved(true)
-    setResult('')
+    try {
+      await saveReviewReport(result.trim())
+      setSaved(true)
+      setResult('')
+      router.refresh()
+    } catch {
+      setSaved(false)
+    }
   }
 
   return (

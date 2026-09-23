@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Check, Pencil, X } from 'lucide-react'
 import { addContribution, createTask } from '@/app/actions/trip-hub'
 
@@ -34,6 +34,10 @@ export function ReviewApprovalQueue({ reviews }: { reviews: Review[] }) {
   const [items, setItems] = useState(() => reviews.flatMap(extractProposals))
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState<string | null>(null)
+  useEffect(() => {
+    setItems(reviews.flatMap(extractProposals))
+  }, [reviews])
+
   const pending = items.filter((item) => item.status === 'pending')
 
   const grouped = useMemo(() => ({
