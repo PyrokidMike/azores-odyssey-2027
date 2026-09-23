@@ -67,10 +67,15 @@ export default function OverviewPage() {
   const { data: session, isPending } = useSession()
   const { comments, ready: planningReady } = usePlanning()
   const userName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'there'
-  const recentComments = Object.entries(comments)
-    .flatMap(([threadId, entries]) => entries.map((entry) => ({ ...entry, threadId })))
-    .sort((a, b) => b.ts - a.ts)
+  const recentThreads = Object.entries(comments)
+    .map(([threadId, entries]) => ({
+      threadId,
+      comments: [...entries].sort((a, b) => a.ts - b.ts),
+      latestTs: Math.max(...entries.map((entry) => entry.ts)),
+    }))
+    .sort((a, b) => b.latestTs - a.latestTs)
     .slice(0, 12)
+  const recentCommentCount = recentThreads.reduce((total, thread) => total + thread.comments.length, 0)
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
@@ -156,8 +161,8 @@ export default function OverviewPage() {
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3"><h3 className="font-serif text-lg font-semibold">New comments</h3><span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">{recentComments.length}</span></div>
-            <div className="mt-4 space-y-2">{recentComments.map((comment) => { const activityId = comment.threadId.startsWith('act:') ? comment.threadId.slice(4) : null; return <Link key={comment.id} href={activityId ? `/activities#activity-${activityId}` : '/activities'} className="block rounded-xl border border-border/70 bg-background p-3 transition-colors hover:border-accent hover:bg-accent/5"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-foreground">{comment.author}</p><time className="text-xs text-muted-foreground" dateTime={new Date(comment.ts).toISOString()}>{new Date(comment.ts).toLocaleDateString()}</time></div><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{comment.text}</p><p className="mt-2 text-xs font-medium text-accent">{comment.threadId.replaceAll(':', ' · ')} · View activity</p></Link>})}{planningReady && recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No new comments yet. Comments added to activities will appear here.</p>}</div>
+            <div className="flex items-center justify-between gap-3"><h3 className="font-serif text-lg font-semibold">New comments by topic</h3><span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">{recentCommentCount} comments · {recentThreads.length} threads</span></div>
+            <div className="mt-4 space-y-3">{recentThreads.map((thread) => { const activityId = thread.threadId.startsWith('act:') ? thread.threadId.slice(4) : null; return <div key={thread.threadId} className="rounded-xl border border-border/70 bg-background p-3"><Link href={activityId ? `/activities#activity-${activityId}` : '/activities'} className="flex items-center justify-between gap-3 transition-colors hover:text-accent"><div><p className="text-sm font-semibold text-foreground">{thread.threadId.replaceAll(':', ' · ')}</p><p className="text-xs text-muted-foreground">{thread.comments.length} {thread.comments.length === 1 ? 'comment' : 'comments'} in this thread</p></div><span className="text-xs font-semibold text-accent">View activity</span></Link><div className="mt-3 space-y-2 border-t border-border/70 pt-3">{thread.comments.map((comment) => <div key={comment.id} className="rounded-lg bg-secondary/50 px-3 py-2"><div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold text-foreground">{comment.author}</p><time className="text-[11px] text-muted-foreground" dateTime={new Date(comment.ts).toISOString()}>{new Date(comment.ts).toLocaleDateString()}</time></div><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{comment.text}</p></div>)}</div></div>})}{planningReady && recentThreads.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No new comments yet. Comments added to activities will appear here.</p>}</div>
           </div>
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
             <h3 className="font-serif text-lg font-semibold">Planner activity</h3>
