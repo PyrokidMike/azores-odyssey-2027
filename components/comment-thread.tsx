@@ -39,6 +39,11 @@ export function CommentThread({ threadId }: { threadId: string }) {
       </div>
 
       <div className="mt-3 space-y-3">
+          {comments.length === 0 && (
+            <p className="rounded-lg border border-dashed border-border px-3 py-2 text-sm text-muted-foreground">
+              No comments yet. Add the first note for the group.
+            </p>
+          )}
           {comments.length > 0 && (
             <ul className="space-y-2.5">
               {comments.map((c) => (
