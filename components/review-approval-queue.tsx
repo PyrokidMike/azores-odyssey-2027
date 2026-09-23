@@ -16,7 +16,7 @@ function findBestThread(text: string, comments: Comment[]) {
   const words = new Set(normalizedWords(text))
   let best: { threadId: string; score: number } | undefined
   for (const comment of comments) {
-    const score = normalizedWords(comment.body).reduce((total, word) => total + (words.has(word) ? 1 : 0), 0)
+    const score = normalizedWords(`${comment.threadId} ${comment.body}`).reduce((total, word) => total + (words.has(word) ? 1 : 0), 0)
     if (score > (best?.score ?? 0)) best = { threadId: comment.threadId, score }
   }
   return best && best.score > 0 ? best.threadId : undefined
@@ -78,7 +78,7 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
     setItems(withMatchedThreads(reviews.flatMap(extractProposals)).filter((item) => !appliedIds.has(item.id)))
   }, [reviews, comments, appliedIds])
 
-  const pending = items.filter((item) => item.status === 'pending')
+  const pending = items.filter((item) => item.status === 'pending' && !appliedIds.has(item.id))
 
   const grouped = useMemo(() => ({
     question: pending.filter((item) => item.kind === 'question'),
@@ -96,13 +96,14 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
     setSaving(item.id)
     setError(null)
     try {
-      if ((item.kind === 'question' || item.kind === 'note') && item.replyThreadId) {
+      if (item.kind === 'question' || item.kind === 'note') {
+        if (!item.replyThreadId) throw new Error('No matching comment thread was found. Select a thread before approving this reply.')
         await addAdminCommentReply(item.replyThreadId, item.text)
         await addContribution({ kind: 'note', title: 'Agent Max reply', body: item.text, itemLabel: 'Recent update · Agent Max' })
       } else if (item.kind === 'task') {
         await createTask({ title: item.text, detail: `Approved from AI review · ${item.source}`, itemLabel: 'AI review action item' })
       } else {
-        await addContribution({ kind: 'note', title: item.kind === 'question' ? 'Group question' : item.kind === 'link' ? 'Link review' : 'Group information', body: item.text, itemLabel: item.kind === 'question' ? 'AI review question' : item.kind === 'link' ? 'AI review link check' : 'AI review note' })
+        await addContribution({ kind: 'note', title: item.kind === 'link' ? 'Link review' : 'Group information', body: item.text, itemLabel: item.kind === 'link' ? 'AI review link check' : 'AI review note' })
       }
       setAppliedIds((current) => new Set(current).add(item.id))
       setItems((current) => current.filter((entry) => entry.id !== item.id))
