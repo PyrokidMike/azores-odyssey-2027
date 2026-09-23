@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Fraunces } from 'next/font/google'
 import './globals.css'
 import { PlanningProvider } from '@/components/planning-provider'
-import { SiteNav } from '@/components/site-nav'
+import { ClientSiteNav } from '@/components/client-site-nav'
 import { SiteFooter } from '@/components/site-footer'
 import { NamePromptDialog } from '@/components/name-prompt-dialog'
 
@@ -45,7 +45,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <PlanningProvider>
           <div className="flex min-h-dvh flex-col">
-            <SiteNav />
+            <ClientSiteNav />
             <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>
