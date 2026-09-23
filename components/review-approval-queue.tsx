@@ -21,13 +21,14 @@ function findExactThread(text: string, comments: Comment[]) {
 const sectionKinds: Record<string, Proposal['kind']> = {
   'ACTION ITEMS': 'task',
   'INFORMATION THE GROUP NEEDS': 'note',
+  'QUESTIONS IN ACTIVITY THREADS': 'question',
   'OPEN QUESTIONS': 'question',
   'BROKEN OR QUESTIONABLE LINKS': 'link',
 }
 
 function extractProposals(review: Review): Proposal[] {
   const normalized = review.body.replace(/\r\n/g, '\n')
-  const sectionPattern = /(?:^|\n)\s*(?:#{1,6}\s*)?(COUNCIL FLAGS|ACTION ITEMS|BROKEN OR QUESTIONABLE LINKS|INFORMATION THE GROUP NEEDS|OPEN QUESTIONS|SHORT SUMMARY)\s*:?[ \t]*(?=\n|$)/gi
+  const sectionPattern = /(?:^|\n)\s*(?:#{1,6}\s*)?(COUNCIL FLAGS|ACTION ITEMS|BROKEN OR QUESTIONABLE LINKS|INFORMATION THE GROUP NEEDS|QUESTIONS IN ACTIVITY THREADS|OPEN QUESTIONS|SHORT SUMMARY)\s*:?[ \t]*(?=\n|$)/gi
   const matches = [...normalized.matchAll(sectionPattern)]
   const proposals: Proposal[] = []
 
@@ -41,7 +42,19 @@ function extractProposals(review: Review): Proposal[] {
     const body = normalized.slice(start, end)
     const lines = body.split('\n').map((line) => line.trim()).filter(Boolean)
     const bullets = lines.filter((line) => /^(?:[-*•]|\d+[.)])\s+/.test(line))
-    const candidates = bullets.length > 0 ? bullets : lines.filter((line) => !/^\[?priority:/i.test(line) && !/^no link issues identified/i.test(line))
+    const metadataBlocks: string[] = []
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+      if (/^THREAD:\s*/i.test(lines[lineIndex])) {
+        const block = lines.slice(lineIndex, lineIndex + 4)
+        if (block.length === 4 && /^QUESTION BY:/i.test(block[1]) && /^QUESTION:/i.test(block[2]) && /^RESPONSE:/i.test(block[3])) {
+          metadataBlocks.push(block.join(' | '))
+          lineIndex += 3
+        }
+      }
+    }
+    const candidates = metadataBlocks.length > 0
+      ? metadataBlocks
+      : (bullets.length > 0 ? bullets : lines.filter((line) => !/^\[?priority:/i.test(line) && !/^no link issues identified/i.test(line)))
     candidates.forEach((line, itemIndex) => {
       const text = line.replace(/^(?:[-*•]|\d+[.)])\s+/, '').trim()
       if (!text) return
