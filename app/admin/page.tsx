@@ -7,6 +7,7 @@ import { comment, contribution, task, vote } from '@/lib/db/schema'
 import { PageHeader } from '@/components/page-header'
 import { AdminReviewPanel } from '@/components/admin-review-panel'
 import { AdminCommentReply } from '@/components/admin-comment-reply'
+import { ReviewApprovalQueue } from '@/components/review-approval-queue'
 import { CheckCircle2, CircleAlert, ClipboardList, MessageSquare, ShieldCheck, Vote } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -36,6 +37,7 @@ export default async function AdminPage() {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
       <AdminReviewPanel items={reviewItems} />
+      <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { label: 'Votes recorded', count: votes.length, detail: 'Group positions saved', icon: Vote, tone: 'bg-cyan-400 text-slate-950' },
