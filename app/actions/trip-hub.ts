@@ -28,6 +28,15 @@ export async function saveVote(itemId: string, choice: string) {
   return { ok: true }
 }
 
+export async function deleteComment(id: number) {
+  const current = await currentUser()
+  if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
+  await db.delete(comment).where(eq(comment.id, id))
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return { ok: true }
+}
+
 export async function addComment(threadId: string, body: string) {
   const current = await currentUser()
   const clean = body.trim()

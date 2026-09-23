@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquare, Send } from 'lucide-react'
+import { deleteComment } from '@/app/actions/trip-hub'
+import { MessageSquare, Send, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePlanning } from '@/components/planning-provider'
 
@@ -24,6 +25,12 @@ export function CommentThread({ threadId }: { threadId: string }) {
     if (!text.trim()) return
     addComment(threadId, text)
     setText('')
+  }
+
+  const removeComment = async (id: string) => {
+    if (!window.confirm('Delete this comment?')) return
+    await deleteComment(Number(id))
+    window.location.reload()
   }
 
   return (
@@ -50,7 +57,7 @@ export function CommentThread({ threadId }: { threadId: string }) {
                 <li key={c.id} className="rounded-lg bg-muted/60 px-2.5 py-1.5">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground">{c.author}</span>
-                    <span className="text-[0.7rem] text-muted-foreground">{timeAgo(c.ts)}</span>
+                    <div className="flex items-center gap-2"><span className="text-[0.7rem] text-muted-foreground">{timeAgo(c.ts)}</span>{c.author === 'Agent Max' && <button type="button" onClick={() => removeComment(c.id)} className="text-[0.7rem] font-semibold text-destructive hover:underline" aria-label="Delete Agent Max comment"><Trash2 className="size-3" aria-hidden="true" /></button>}</div>
                   </div>
                   <p className="mt-0.5 text-[0.8rem] leading-relaxed text-foreground/85">{c.text}</p>
                 </li>
