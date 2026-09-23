@@ -96,6 +96,7 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
     try {
       if ((item.kind === 'question' || item.kind === 'note') && item.replyThreadId) {
         await addAdminCommentReply(item.replyThreadId, item.text)
+        await addContribution({ kind: 'note', title: 'Agent Max reply', body: item.text, itemLabel: 'Recent update · Agent Max' })
       } else if (item.kind === 'task') {
         await createTask({ title: item.text, detail: `Approved from AI review · ${item.source}`, itemLabel: 'AI review action item' })
       } else {
