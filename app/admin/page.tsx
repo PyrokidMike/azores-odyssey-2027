@@ -24,12 +24,13 @@ export default async function AdminPage() {
   const recentComments = comments.slice(0, 5)
   const recentContributions = contributions.filter((item) => item.itemLabel !== 'Admin review').slice(0, 5)
   const recentReviews = contributions.filter((item) => item.itemLabel === 'Admin review').slice(0, 5)
+  const lastReviewAt = recentReviews[0]?.createdAt.getTime() ?? 0
   const reviewItems = [
-    ...comments.map((item) => ({ kind: 'Comment', author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
-    ...contributions.map((item) => ({ kind: item.kind === 'link' ? 'New link' : 'Contribution', author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
-    ...tasks.map((item) => ({ kind: 'Task', author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
-    ...votes.map((item) => ({ kind: 'Vote', author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
-  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 40)
+    ...comments.filter((item) => item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Comment', author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
+    ...contributions.filter((item) => item.itemLabel !== 'Admin review' && item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: item.kind === 'link' ? 'New link' : 'Contribution', author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
+    ...tasks.filter((item) => item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Task', author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
+    ...votes.filter((item) => item.updatedAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Vote', author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
