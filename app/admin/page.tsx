@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/page-header'
 import { AdminReviewPanel } from '@/components/admin-review-panel'
 import { AdminCommentReply } from '@/components/admin-comment-reply'
 import { ReviewApprovalQueue } from '@/components/review-approval-queue'
+import { SavedReviewList } from '@/components/saved-review-list'
 import { CheckCircle2, CircleAlert, ClipboardList, MessageSquare, ShieldCheck, Vote } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -68,7 +69,7 @@ export default async function AdminPage() {
       </div>
       <section className="mt-6 rounded-xl border border-border bg-card p-5">
         <div className="flex items-center justify-between gap-3"><div><h2 className="font-serif text-2xl">Saved AI reviews</h2><p className="mt-1 text-sm text-muted-foreground">Your pasted research summaries and action-item notes.</p></div><span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">{recentReviews.length}</span></div>
-        <div className="mt-4 space-y-3">{recentReviews.map((item) => <details key={item.id} className="rounded-xl border border-border/70 bg-secondary/30 p-4"><summary className="cursor-pointer font-medium">{new Date(item.createdAt).toLocaleString()} · {item.authorName}</summary><p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{item.body}</p></details>)}{recentReviews.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No AI reviews saved yet.</p>}</div>
+        <SavedReviewList reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), authorName: item.authorName, body: item.body }))} />
       </section>
       <section className="mt-6 rounded-xl border border-border bg-card p-5">
         <h2 className="font-serif text-2xl">Recent comments</h2>

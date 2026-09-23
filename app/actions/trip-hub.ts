@@ -85,6 +85,14 @@ export async function saveReviewReport(body: string) {
   return { ok: true }
 }
 
+export async function deleteSavedReview(id: number) {
+  const current = await currentUser()
+  if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
+  await db.delete(contribution).where(and(eq(contribution.id, id), eq(contribution.userId, current.id), eq(contribution.itemLabel, 'Admin review')))
+  revalidatePath('/admin')
+  return { ok: true }
+}
+
 export async function addContribution(input: { kind: 'note' | 'link' | 'photo'; title?: string; body?: string; photoPathname?: string; taskId?: number; itemRef?: string; itemLabel?: string }) {
   const current = await currentUser()
   await db.insert(contribution).values({ userId: current.id, authorName: current.name, kind: input.kind, title: input.title?.trim() || null, body: input.body?.trim() || null, photoPathname: input.photoPathname ?? null, taskId: input.taskId ?? null, itemRef: input.itemRef ?? null, itemLabel: input.itemLabel ?? null })
