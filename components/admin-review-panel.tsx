@@ -82,8 +82,9 @@ Never infer or invent a thread ID. If an item has no exact source thread, write 
 - Concise operational facts and planning implications.
 - Include group-fit, eligibility, weather/season, booking, island, and trip-length implications only where supported.
 
-## OPEN QUESTIONS
+## QUESTIONS IN ACTIVITY THREADS
 - List only questions that materially block or improve a decision.
+- These are questions already asked inside a specific activity thread, not unassigned/open questions. Preserve the exact activity/thread ID and question author.
 - Prioritize ages/heights/weights, swimming comfort, heights/cliffs/cave comfort, dates, headcount, trip length, and island priorities.
 
 ## SHORT SUMMARY
