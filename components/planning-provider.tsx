@@ -67,10 +67,16 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as PersistedState
+        const cachedComments = Object.fromEntries(
+          Object.entries(parsed.comments ?? {}).map(([threadId, entries]) => [
+            threadId,
+            entries.filter((entry) => entry.author !== 'Agent Max'),
+          ]),
+        )
         setState({
           displayName: parsed.displayName ?? null,
           votes: parsed.votes ?? {},
-          comments: parsed.comments ?? {},
+          comments: cachedComments,
         })
       }
     } catch {
