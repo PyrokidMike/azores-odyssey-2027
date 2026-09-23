@@ -37,6 +37,17 @@ export async function addComment(threadId: string, body: string) {
   return { ok: true }
 }
 
+export async function addAdminCommentReply(threadId: string, body: string) {
+  const current = await currentUser()
+  if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
+  const clean = body.trim()
+  if (!clean || clean.length > 2000) throw new Error('Invalid comment')
+  await db.insert(comment).values({ userId: current.id, authorName: current.name, threadId, body: clean })
+  revalidatePath('/admin')
+  revalidatePath('/')
+  return { ok: true }
+}
+
 export async function listPeople() {
   await currentUser()
   return db.select({ id: user.id, name: user.name, email: user.email }).from(user).innerJoin(member, eq(member.userId, user.id)).orderBy(asc(user.name))

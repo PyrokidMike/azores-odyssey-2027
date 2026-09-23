@@ -6,6 +6,7 @@ import { db } from '@/lib/db'
 import { comment, contribution, task, vote } from '@/lib/db/schema'
 import { PageHeader } from '@/components/page-header'
 import { AdminReviewPanel } from '@/components/admin-review-panel'
+import { AdminCommentReply } from '@/components/admin-comment-reply'
 import { CheckCircle2, CircleAlert, ClipboardList, MessageSquare, ShieldCheck, Vote } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -68,7 +69,7 @@ export default async function AdminPage() {
       </section>
       <section className="mt-6 rounded-xl border border-border bg-card p-5">
         <h2 className="font-serif text-2xl">Recent comments</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">{recentComments.map((item) => <div key={item.id} className="rounded-xl border border-border/70 bg-secondary/40 p-4"><div className="flex items-center gap-2"><MessageSquare className="size-4 text-lime-500" aria-hidden="true" /><span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{item.authorName}</span></div><p className="mt-2 text-sm leading-relaxed">“{item.body}”</p><p className="mt-3 text-xs text-muted-foreground">Related to {item.threadId}</p></div>)}{recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No comments yet.</p>}</div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">{recentComments.map((item) => <div key={item.id} className="rounded-xl border border-border/70 bg-secondary/40 p-4"><div className="flex items-center gap-2"><MessageSquare className="size-4 text-lime-500" aria-hidden="true" /><span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{item.authorName}</span></div><p className="mt-2 text-sm leading-relaxed">“{item.body}”</p><p className="mt-3 text-xs text-muted-foreground">Related to {item.threadId}</p><AdminCommentReply comment={{ ...item, createdAt: item.createdAt.toISOString() }} /></div>)}{recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No comments yet.</p>}</div>
       </section>
     </main>
   )
