@@ -15,19 +15,36 @@ const sectionKinds: Record<string, Proposal['kind']> = {
 }
 
 function extractProposals(review: Review): Proposal[] {
-  const sections = review.body.split(/^##\s+/m).slice(1)
-  return sections.flatMap((section) => {
-    const [heading, ...lines] = section.split('\n')
-    const kind = sectionKinds[heading.trim().toUpperCase()]
-    if (!kind) return []
-    return lines.filter((line) => /^\s*[-*]/.test(line)).map((line, index) => ({
-      id: `${review.id}-${heading}-${index}`,
-      kind,
-      text: line.replace(/^\s*[-*]\s*/, '').trim(),
-      source: heading.trim(),
-      status: 'pending' as const,
-    }))
-  })
+  const normalized = review.body.replace(/\r\n/g, '\n')
+  const sectionPattern = /(?:^|\n)\s*(?:#{1,6}\s*)?(COUNCIL FLAGS|ACTION ITEMS|BROKEN OR QUESTIONABLE LINKS|INFORMATION THE GROUP NEEDS|OPEN QUESTIONS|SHORT SUMMARY)\s*:?[ \t]*(?=\n|$)/gi
+  const matches = [...normalized.matchAll(sectionPattern)]
+  const proposals: Proposal[] = []
+
+  for (let index = 0; index < matches.length; index += 1) {
+    const match = matches[index]
+    const heading = match[1].trim()
+    const kind = sectionKinds[heading.toUpperCase()]
+    if (!kind) continue
+    const start = (match.index ?? 0) + match[0].length
+    const end = matches[index + 1]?.index ?? normalized.length
+    const body = normalized.slice(start, end)
+    const lines = body.split('\n').map((line) => line.trim()).filter(Boolean)
+    const bullets = lines.filter((line) => /^(?:[-*•]|\d+[.)])\s+/.test(line))
+    const candidates = bullets.length > 0 ? bullets : lines.filter((line) => !/^\[?priority:/i.test(line) && !/^no link issues identified/i.test(line))
+    candidates.forEach((line, itemIndex) => {
+      const text = line.replace(/^(?:[-*•]|\d+[.)])\s+/, '').trim()
+      if (!text) return
+      proposals.push({
+        id: `${review.id}-${heading}-${itemIndex}`,
+        kind,
+        text,
+        source: heading,
+        status: 'pending',
+      })
+    })
+  }
+
+  return proposals
 }
 
 export function ReviewApprovalQueue({ reviews }: { reviews: Review[] }) {
