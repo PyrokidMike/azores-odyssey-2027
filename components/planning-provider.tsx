@@ -96,16 +96,11 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
             ts: new Date(entry.createdAt).getTime(),
           })
         }
-        setState((previous) => {
-          const mergedComments: PersistedState['comments'] = { ...previous.comments }
-          for (const [threadId, entries] of Object.entries(comments)) {
-            const existing = mergedComments[threadId] ?? []
-            const byId = new Map(existing.map((entry) => [entry.id, entry]))
-            for (const entry of entries) byId.set(entry.id, entry)
-            mergedComments[threadId] = [...byId.values()].sort((a, b) => a.ts - b.ts)
-          }
-          return { displayName: data.user.name ?? previous.displayName, votes, comments: mergedComments }
-        })
+        setState((previous) => ({
+          displayName: data.user.name ?? previous.displayName,
+          votes,
+          comments,
+        }))
         setSharedLoaded(true)
       })
       .catch(() => setSharedLoaded(true))
