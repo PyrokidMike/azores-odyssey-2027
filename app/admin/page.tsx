@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { comment, contribution, task, vote } from '@/lib/db/schema'
 import { PageHeader } from '@/components/page-header'
+import { AdminReviewPanel } from '@/components/admin-review-panel'
 import { CheckCircle2, CircleAlert, ClipboardList, MessageSquare, ShieldCheck, Vote } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -20,11 +21,19 @@ export default async function AdminPage() {
   const openTasks = tasks.filter((item) => item.status !== 'done')
   const recentVotes = votes.slice(0, 8)
   const recentComments = comments.slice(0, 5)
-  const recentContributions = contributions.slice(0, 5)
+  const recentContributions = contributions.filter((item) => item.itemLabel !== 'Admin review').slice(0, 5)
+  const recentReviews = contributions.filter((item) => item.itemLabel === 'Admin review').slice(0, 5)
+  const reviewItems = [
+    ...comments.map((item) => ({ kind: 'Comment', author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
+    ...contributions.map((item) => ({ kind: item.kind === 'link' ? 'New link' : 'Contribution', author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
+    ...tasks.map((item) => ({ kind: 'Task', author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
+    ...votes.map((item) => ({ kind: 'Vote', author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 40)
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
+      <AdminReviewPanel items={reviewItems} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { label: 'Votes recorded', count: votes.length, detail: 'Group positions saved', icon: Vote, tone: 'bg-cyan-400 text-slate-950' },
@@ -53,6 +62,10 @@ export default async function AdminPage() {
           <div className="mt-4 space-y-3">{openTasks.slice(0, 6).map((item) => <div key={`task-${item.id}`} className="flex items-start gap-3 rounded-xl border border-yellow-300/50 bg-yellow-300/10 p-3"><CircleAlert className="mt-0.5 size-5 shrink-0 text-yellow-500" aria-hidden="true" /><div className="min-w-0"><p className="font-medium">{item.title}</p><p className="text-sm text-muted-foreground">{item.status} · {item.assigneeName ?? 'Unassigned'}{item.itemLabel ? ` · ${item.itemLabel}` : ''}</p></div></div>)}{recentContributions.map((item) => <div key={`contribution-${item.id}`} className="flex items-start gap-3 rounded-xl border border-fuchsia-400/40 bg-fuchsia-400/10 p-3"><ShieldCheck className="mt-0.5 size-5 shrink-0 text-fuchsia-500" aria-hidden="true" /><div className="min-w-0"><p className="font-medium">{item.title ?? item.kind}</p><p className="text-sm text-muted-foreground">{item.authorName} · {item.itemLabel ?? 'General contribution'}</p></div></div>)}{openTasks.length === 0 && recentContributions.length === 0 && <p className="flex items-center gap-2 rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground"><CheckCircle2 className="size-4 text-lime-500" aria-hidden="true" />Nothing needs attention yet.</p>}</div>
         </section>
       </div>
+      <section className="mt-6 rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center justify-between gap-3"><div><h2 className="font-serif text-2xl">Saved AI reviews</h2><p className="mt-1 text-sm text-muted-foreground">Your pasted research summaries and action-item notes.</p></div><span className="rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">{recentReviews.length}</span></div>
+        <div className="mt-4 space-y-3">{recentReviews.map((item) => <details key={item.id} className="rounded-xl border border-border/70 bg-secondary/30 p-4"><summary className="cursor-pointer font-medium">{new Date(item.createdAt).toLocaleString()} · {item.authorName}</summary><p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{item.body}</p></details>)}{recentReviews.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No AI reviews saved yet.</p>}</div>
+      </section>
       <section className="mt-6 rounded-xl border border-border bg-card p-5">
         <h2 className="font-serif text-2xl">Recent comments</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">{recentComments.map((item) => <div key={item.id} className="rounded-xl border border-border/70 bg-secondary/40 p-4"><div className="flex items-center gap-2"><MessageSquare className="size-4 text-lime-500" aria-hidden="true" /><span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{item.authorName}</span></div><p className="mt-2 text-sm leading-relaxed">“{item.body}”</p><p className="mt-3 text-xs text-muted-foreground">Related to {item.threadId}</p></div>)}{recentComments.length === 0 && <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No comments yet.</p>}</div>

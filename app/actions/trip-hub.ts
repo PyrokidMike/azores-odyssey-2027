@@ -64,6 +64,16 @@ export async function listTasks() {
   return db.select().from(task).orderBy(desc(task.createdAt))
 }
 
+export async function saveReviewReport(body: string) {
+  const current = await currentUser()
+  if (current.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) throw new Error('Unauthorized')
+  const clean = body.trim()
+  if (!clean || clean.length > 20000) throw new Error('Invalid review')
+  await db.insert(contribution).values({ userId: current.id, authorName: current.name, kind: 'note', title: 'AI group review', body: clean, itemLabel: 'Admin review' })
+  revalidatePath('/admin')
+  return { ok: true }
+}
+
 export async function addContribution(input: { kind: 'note' | 'link' | 'photo'; title?: string; body?: string; photoPathname?: string; taskId?: number; itemRef?: string; itemLabel?: string }) {
   const current = await currentUser()
   await db.insert(contribution).values({ userId: current.id, authorName: current.name, kind: input.kind, title: input.title?.trim() || null, body: input.body?.trim() || null, photoPathname: input.photoPathname ?? null, taskId: input.taskId ?? null, itemRef: input.itemRef ?? null, itemLabel: input.itemLabel ?? null })
