@@ -60,9 +60,41 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
   const [namePromptOpen, setNamePromptOpen] = useState(false)
   const pendingVote = useRef<{ itemId: string; value: VoteValue } | null>(null)
 
+  // Pull the shared (account) history from the server. Safe to call repeatedly.
+  const loadShared = useCallback(async () => {
+    try {
+      const response = await fetch('/api/hub/state', { cache: 'no-store' })
+      if (!response.ok) return
+      const data = await response.json()
+      if (!data?.user) return
+      const votes: PersistedState['votes'] = {}
+      for (const entry of data.votes ?? []) {
+        const itemVotes = (votes[entry.itemId] ??= {})
+        itemVotes[entry.authorName || entry.userId] = entry.choice as VoteValue
+      }
+      const comments: PersistedState['comments'] = {}
+      for (const entry of data.comments ?? []) {
+        const threadComments = (comments[entry.threadId] ??= [])
+        threadComments.push({
+          id: String(entry.id),
+          author: entry.authorName,
+          text: entry.body,
+          ts: new Date(entry.createdAt).getTime(),
+        })
+      }
+      setState((previous) => ({
+        displayName: data.user.name ?? previous.displayName,
+        votes,
+        comments,
+      }))
+      setSharedLoaded(true)
+    } catch {
+      // Network/parse failure — keep whatever we already have.
+    }
+  }, [])
+
   // Load the local fallback first, then replace it with the signed-in account history.
   useEffect(() => {
-    let cancelled = false
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
@@ -83,39 +115,25 @@ export function PlanningProvider({ children }: { children: React.ReactNode }) {
       // Corrupt or unavailable storage — start clean.
     }
 
-    void fetch('/api/hub/state', { cache: 'no-store' })
-      .then(async (response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (cancelled || !data?.user) return
-        const votes: PersistedState['votes'] = {}
-        for (const entry of data.votes ?? []) {
-          const itemVotes = (votes[entry.itemId] ??= {})
-          itemVotes[entry.authorName || entry.userId] = entry.choice as VoteValue
-        }
-        const comments: PersistedState['comments'] = {}
-        for (const entry of data.comments ?? []) {
-          const threadComments = (comments[entry.threadId] ??= [])
-          threadComments.push({
-            id: String(entry.id),
-            author: entry.authorName,
-            text: entry.body,
-            ts: new Date(entry.createdAt).getTime(),
-          })
-        }
-        setState((previous) => ({
-          displayName: data.user.name ?? previous.displayName,
-          votes,
-          comments,
-        }))
-        setSharedLoaded(true)
-      })
-      .catch(() => setSharedLoaded(true))
-      .finally(() => setReady(true))
+    void loadShared().finally(() => setReady(true))
+  }, [loadShared])
 
-    return () => {
-      cancelled = true
+  // Keep shared state fresh: refetch when the tab regains focus/visibility and on a short interval.
+  // Without this, comments and published Agent Max replies only appear after a full page reload,
+  // because the provider lives in the root layout and never remounts during in-app navigation.
+  useEffect(() => {
+    const refetch = () => {
+      if (document.visibilityState === 'visible') void loadShared()
     }
-  }, [])
+    window.addEventListener('focus', refetch)
+    document.addEventListener('visibilitychange', refetch)
+    const interval = window.setInterval(refetch, 20000)
+    return () => {
+      window.removeEventListener('focus', refetch)
+      document.removeEventListener('visibilitychange', refetch)
+      window.clearInterval(interval)
+    }
+  }, [loadShared])
 
   // Keep a browser fallback for offline rendering, without overwriting account history during hydration.
   useEffect(() => {
