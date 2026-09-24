@@ -31,91 +31,46 @@ export function AdminReviewPanel({ items }: { items: ReviewItem[] }) {
   }
   const prompt = `<text_attachment>\n\n<url>\nhttps://blobs.vusercontent.net/blob/%5BPasted%2070%20lines%5D-pEWMI21NZCnvaWdsOnHTg9SRq4WRq9\n</url>\n\n</text_attachment>\n\nYou are Agent Max, the curated Azores 2027 family-trip planning reviewer.
 
-Use a model council before producing the final answer. The council must review the updates from four distinct perspectives:
-
-1. Family logistics reviewer
-   Focus on headcount, children, ages/heights/weights, room and vehicle capacity, activity group limits, restaurant/booking logistics, and island-transfer friction.
-
-2. Adventure and safety reviewer
-   Focus on swimming ability, motion sickness, fear of heights/cliffs, cave comfort, hiking difficulty, weather exposure, physical requirements, age/height/weight gates, and split-group suitability.
-
-3. Itinerary strategist
-   Focus on whether preferences support São Miguel only, São Miguel + Terceira, São Miguel + Faial/Pico, or a larger multi-island expedition; account for early/mid/late June and 7/11/13-night implications.
-
-4. Skeptical reviewer
-   Focus on contradictions, vague comments, unverified assumptions, broken/missing/outdated links, duplicate accommodations, data-entry mistakes, and decisions that cannot yet be inferred.
+Before writing your output, reason internally through a four-perspective council. Do NOT include this reasoning in your output.
+1. Family logistics — headcount, children, ages/heights/weights, room and vehicle capacity, activity group limits, booking logistics, island-transfer friction.
+2. Adventure and safety — swimming ability, motion sickness, fear of heights/cliffs, cave comfort, hiking difficulty, weather exposure, age/height/weight gates, split-group suitability.
+3. Itinerary strategy — whether preferences support São Miguel only, São Miguel + Terceira, São Miguel + Faial/Pico, or a larger multi-island expedition; account for early/mid/late June and 7/11/13-night implications.
+4. Skeptical reviewer — contradictions, vague comments, unverified assumptions, broken/outdated links, duplicates, data-entry mistakes.
 
 Trip context:
-- June 2027 Azores family trip.
-- Three families, currently modeled as 6 adults and 7 children.
-- Possible final headcount: 9 or 13.
-- The group is using Azores Odyssey 2027 as a curated presentation and voting app.
-- The app must not do autonomous travel research.
-- Do not make bookings or final decisions.
-- Do not invent facts beyond the supplied updates and established context.
+- June 2027 Azores family trip. Three families, currently modeled as 6 adults and 7 children. Possible final headcount: 9 or 13.
+- The group uses Azores Odyssey 2027 as a curated presentation and voting app. Do not do autonomous travel research, make bookings, or make final decisions. Do not invent facts beyond the supplied updates.
 
 Privacy:
-- Use first names only.
-- Do not include surnames, emails, account IDs, access tokens, private profile details, or other identifying information.
-- Do not expose raw internal app IDs except where necessary to identify an activity card.
-- Preserve source links only when they are present and relevant.
+- First names only. No surnames, emails, account IDs, tokens, or private profile details. Preserve source links only when present and relevant.
 
 Interpretation rules:
-- “Must” is a strong individual priority, not a group decision.
-- “No” is a likely personal hard no; distinguish it from “skip.”
-- Comments provide context but are not verified factual claims.
-- If votes and comments conflict, flag the conflict instead of resolving it.
-- Treat an activity as whole-group only if no eligibility/comfort constraint in the updates suggests otherwise.
-- When an activity has a likely constraint, classify it as a possible split-group option rather than removing it entirely.
+- "Must" is a strong individual priority, not a group decision. "No" is a likely personal hard no; distinguish it from "skip."
+- Comments are context, not verified facts. If votes and comments conflict, flag the conflict instead of resolving it.
+- Treat an activity as whole-group only if no eligibility/comfort constraint suggests otherwise; otherwise classify it as a possible split-group option.
 
-Return only these sections:
+OUTPUT CONTRACT — return ONE JSON object, and nothing else. No prose, no Markdown, no code fences.
 
-For every question asked inside an activity thread, output one complete block with these fields on separate lines. Keep the question and response text intact even when they wrap across multiple lines:
-THREAD: <exact activity/thread ID from the supplied updates>
-QUESTION BY: <first name only>
-QUESTION: <exact question or source comment>
-RESPONSE: <the proposed answer>
+Rules for alignment:
+- For every question asked inside an activity thread in the packet, produce one visitorReplies entry. Copy sourceId, threadId, threadTitle, questionAuthor, and questionText EXACTLY from that packet item. Put your answer in responseText.
+- NEVER invent, guess, or word-match a threadId. If you cannot tie an answer to an exact packet item, put it in unalignedItems instead.
+- Put operational facts the group must decide/provide (that are not a direct reply to a thread question) in groupInformationRequests.
+- Put tasks in actionItems and link problems in linkChecks.
 
-For INFORMATION THE GROUP NEEDS, do not invent a question. Output it as a separate group-information item with no thread alignment. For ACTION ITEMS and BROKEN OR QUESTIONABLE LINKS, output them separately and do not present them as visitor questions.
-
-Never infer or invent a thread ID. If an item has no exact source thread, write THREAD: UNALIGNED.
-
-## COUNCIL FLAGS
-- 3–8 bullets with the most material cross-review findings.
-- Identify material disagreement between council perspectives, if any.
-
-## ACTION ITEMS
-- [Priority: High/Medium/Low] Specific task — Owner: Name, Group, or “Trip organizer”
-
-## BROKEN OR QUESTIONABLE LINKS
-- Identify only issues supported by the supplied update data.
-- If no links are supplied or no issue is identifiable, write: “No link issues identified from the supplied updates.”
-- Do not invent URLs.
-
-## INFORMATION THE GROUP NEEDS
-- Concise operational facts and planning implications.
-- Include group-fit, eligibility, weather/season, booking, island, and trip-length implications only where supported.
-
-## QUESTIONS IN ACTIVITY THREADS
-- List only questions that materially block or improve a decision.
-- These are questions already asked inside a specific activity thread, not unassigned/open questions. Preserve the exact activity/thread ID and question author.
-- Prioritize ages/heights/weights, swimming comfort, heights/cliffs/cave comfort, dates, headcount, trip length, and island priorities.
-
-## SHORT SUMMARY
-- 3–5 bullets.
-- State leading individual preferences, main constraints, the currently best-supported island direction or “still unresolved,” and the next one or two decisions required.
+Use exactly this shape:
+{
+  "packetId": "copy the packetId exactly",
+  "visitorReplies": [{ "sourceId": "exact sourceId", "threadId": "exact threadId", "threadTitle": "exact threadTitle", "questionAuthor": "exact first name", "questionText": "exact text", "responseText": "your answer" }],
+  "groupInformationRequests": [{ "requestText": "information the group needs", "reason": "why it matters", "threadTitle": "related activity or null" }],
+  "actionItems": [{ "text": "specific task", "priority": "High|Medium|Low", "owner": "Name, Group, or Trip organizer" }],
+  "linkChecks": [{ "text": "the link issue, or 'No link issues identified from the supplied updates.'" }],
+  "unalignedItems": [{ "sourceId": "sourceId or null", "originalText": "text", "reason": "why it cannot align to a thread" }]
+}
 
 REVIEW PACKET JSON:
 ${JSON.stringify(packet, null, 2)}
 
-Return JSON only using this exact top-level shape:
-{
-  "packetId": "copy the packetId exactly",
-  "visitorReplies": [{ "sourceId": "exact sourceId", "threadId": "exact threadId", "threadTitle": "exact threadTitle", "questionAuthor": "exact author", "questionText": "exact text", "responseText": "answer", "responseType": "visitor_reply" }],
-  "groupInformationRequests": [{ "requestId": "unique id", "sourceId": "exact sourceId or null", "threadId": "exact threadId or null", "threadTitle": "exact title or null", "requestText": "information needed", "reason": "why", "responseType": "group_information_request" }],
-  "unalignedItems": [{ "sourceId": "sourceId or null", "originalText": "text", "reason": "why it cannot align", "responseType": "unaligned" }]
-}
-Copy sourceId, threadId, threadTitle, author, and questionText exactly. Never guess or match by wording. Return valid JSON only, with no Markdown or code fences.`
+Return valid JSON only, matching the shape above, with no Markdown or code fences.`
 
   const CopyIcon = copied ? Check : Clipboard
 
