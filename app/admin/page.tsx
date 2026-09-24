@@ -29,10 +29,10 @@ export default async function AdminPage() {
   const recentReviews = contributions.filter((item) => item.itemLabel === 'Admin review').slice(0, 5)
   const lastReviewAt = recentReviews[0]?.createdAt.getTime() ?? 0
   const reviewItems = [
-    ...comments.filter((item) => item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Comment', author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
-    ...contributions.filter((item) => item.itemLabel !== 'Admin review' && item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: item.kind === 'link' ? 'New link' : 'Contribution', author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
-    ...tasks.filter((item) => item.createdAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Task', author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
-    ...votes.filter((item) => item.updatedAt.getTime() > lastReviewAt).map((item) => ({ kind: 'Vote', author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
+    ...comments.map((item) => ({ kind: 'visitor_question', sourceId: `comment_${item.id}`, threadId: item.threadId, threadTitle: item.threadId.replace(/^act:/, '').replace(/[-_]/g, ' '), author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
+    ...contributions.filter((item) => item.itemLabel !== 'Admin review').map((item) => ({ kind: item.kind === 'link' ? 'group_information_request' : 'contribution', sourceId: `contribution_${item.id}`, threadId: null, threadTitle: null, author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
+    ...tasks.map((item) => ({ kind: 'action_item', sourceId: `task_${item.id}`, threadId: null, threadTitle: null, author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
+    ...votes.map((item) => ({ kind: 'vote', sourceId: `vote_${item.id}`, threadId: null, threadTitle: null, author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
