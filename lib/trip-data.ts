@@ -390,7 +390,7 @@ export const ACTIVITIES: Activity[] = [
       'Sea caves, scrambling, swimming and optional jumps. Do not treat as an all-13 activity.',
     urgency: 'Confirm before booking',
     status: 'Confirmed research',
-    link: 'https://azoresadventureislands.com/all-activities/',
+    link: 'https://azoresadventureislands.com/all-activities/coasteering-cliffs-caves-ocean-fun/',
   },
 
   // VOLCANO & GEOLOGY
