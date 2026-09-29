@@ -6,19 +6,32 @@ import { Clipboard, Check, Save, Sparkles } from 'lucide-react'
 import { saveReviewReport } from '@/app/actions/trip-hub'
 
 type ReviewItem = { kind: string; sourceId: string; threadId: string | null; threadTitle: string | null; author?: string; title: string; detail: string; createdAt: string }
+type ActivityCatalogItem = { id: string; name: string; islands: string[]; groupFit: string; fitNote: string; intensity: string; notes: string; urgency: string; status: string; link: string }
 
 function firstNameOnly(name?: string) {
   const firstName = name?.trim().split(/\s+/)[0]
   return firstName || 'Unknown'
 }
 
-export function AdminReviewPanel({ items }: { items: ReviewItem[] }) {
+export function AdminReviewPanel({ items, activityCatalog }: { items: ReviewItem[]; activityCatalog: ActivityCatalogItem[] }) {
   const router = useRouter()
   const [result, setResult] = useState('')
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
   const packet = {
     packetId: `review_packet_${new Date().toISOString()}`,
+    tripFacts: {
+      trip: 'Azores family trip',
+      travelWindow: 'June 2027; exact dates not yet finalized',
+      currentHeadcount: { adults: 6, children: 7, total: 13 },
+      possibleFinalHeadcounts: [9, 13],
+      families: 3,
+      knownConstraints: [
+        'Swimming ability, motion sickness, heights/cliffs, cave comfort, hiking tolerance, and hard no preferences must be checked against the supplied comments and votes.',
+        'Activities may need split-group treatment when age, height, weight, comfort, or weather constraints apply.',
+      ],
+    },
+    activities: activityCatalog,
     items: items.map((item) => ({
       sourceId: item.sourceId,
       threadId: item.threadId,
@@ -52,7 +65,9 @@ Interpretation rules:
 OUTPUT CONTRACT — return ONE JSON object, and nothing else. No prose, no Markdown, no code fences.
 
 Rules for alignment:
-- For every question asked inside an activity thread in the packet, produce one visitorReplies entry. Copy sourceId, threadId, threadTitle, questionAuthor, and questionText EXACTLY from that packet item. Put your answer in responseText.
+- For every item with type visitor_question, produce one visitorReplies entry when an answer is appropriate. Copy sourceId, threadId, threadTitle, author, and text EXACTLY from that packet item; use them as questionAuthor and questionText. Put your answer in responseText.
+- Votes are already linked when threadId is present. Interpret must/interested/skip/no only in the context of that exact threadTitle. Never detach or relink a vote.
+- Use tripFacts, knownConstraints, and the activities catalog as the review context. Activity entries include provider link, islands/location, group fit, fit notes, intensity, urgency, research status, and curated notes. Do not invent missing age, height, weight, group-size, weather, or date facts; flag them in groupInformationRequests or linkChecks.
 - NEVER invent, guess, or word-match a threadId. If you cannot tie an answer to an exact packet item, put it in unalignedItems instead.
 - Put operational facts the group must decide/provide (that are not a direct reply to a thread question) in groupInformationRequests.
 - Put tasks in actionItems and link problems in linkChecks.
@@ -99,7 +114,7 @@ Return valid JSON only, matching the shape above, with no Markdown or code fence
         <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">{items.length} updates ready</span>
       </div>
       <div className="mt-5 grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="rounded-xl border border-border bg-card p-4"><div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Review packet</h3><button type="button" onClick={copyPrompt} className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"><CopyIcon className="size-4" aria-hidden="true" />{copied ? 'Copied' : 'Copy prompt'}</button></div><p className="mt-2 text-xs text-muted-foreground">Includes all current visitor comments, votes, tasks, and group information with stable source IDs, exact thread IDs, first names, and dates.</p><div className="mt-3 max-h-64 overflow-auto rounded-lg bg-secondary/50 p-3 text-xs leading-relaxed text-muted-foreground">{items.map((item, index) => <div key={`${item.kind}-${item.createdAt}-${index}`} className="border-b border-border/50 py-2 last:border-0"><span className="font-semibold text-foreground">{item.kind} · {item.title}</span><br />{firstNameOnly(item.author)} · {item.detail}</div>)}{items.length === 0 && <p>No new updates yet.</p>}</div></div>
+        <div className="rounded-xl border border-border bg-card p-4"><div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Review packet</h3><button type="button" onClick={copyPrompt} className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"><CopyIcon className="size-4" aria-hidden="true" />{copied ? 'Copied' : 'Copy prompt'}</button></div><p className="mt-2 text-xs text-muted-foreground">Includes trip facts, known constraints, the full curated activity catalog with provider links and rules, and all current visitor comments, votes, tasks, and group information with stable source IDs, exact thread IDs, first names, and dates.</p><div className="mt-3 max-h-64 overflow-auto rounded-lg bg-secondary/50 p-3 text-xs leading-relaxed text-muted-foreground">{items.map((item, index) => <div key={`${item.kind}-${item.createdAt}-${index}`} className="border-b border-border/50 py-2 last:border-0"><span className="font-semibold text-foreground">{item.kind} · {item.title}</span><br />{firstNameOnly(item.author)} · {item.detail}</div>)}{items.length === 0 && <p>No new updates yet.</p>}</div></div>
         <div className="rounded-xl border border-border bg-card p-4"><h3 className="font-semibold">Paste AI review</h3><textarea value={result} onChange={(event) => { setResult(event.target.value); setSaved(false) }} placeholder="Paste the action items, broken-link notes, and information requests here…" className="mt-3 min-h-44 w-full resize-y rounded-lg border border-input bg-background p-3 text-sm leading-relaxed outline-none focus-visible:ring-2 focus-visible:ring-ring/40" /><div className="mt-3 flex items-center justify-between gap-3"><p className="text-xs text-muted-foreground">Saved reviews stay in this admin dashboard as notes.</p><button type="button" onClick={saveResult} disabled={!result.trim()} className="inline-flex items-center gap-2 rounded-lg bg-foreground px-3 py-2 text-sm font-semibold text-background disabled:cursor-not-allowed disabled:opacity-40"><Save className="size-4" aria-hidden="true" />{saved ? 'Saved' : 'Save review'}</button></div></div>
       </div>
     </section>

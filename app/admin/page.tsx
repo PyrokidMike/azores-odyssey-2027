@@ -10,6 +10,7 @@ import { AdminReviewPanel } from '@/components/admin-review-panel'
 import { AdminCommentReply } from '@/components/admin-comment-reply'
 import { ReviewApprovalQueue } from '@/components/review-approval-queue'
 import { SavedReviewList } from '@/components/saved-review-list'
+import { ACTIVITIES, DECISIONS, ISLAND_CONCEPTS } from '@/lib/trip-data'
 import { CheckCircle2, CircleAlert, ClipboardList, MessageSquare, ShieldCheck, Vote } from 'lucide-react'
 
 export default async function AdminPage() {
@@ -32,13 +33,19 @@ export default async function AdminPage() {
     ...comments.map((item) => ({ kind: 'visitor_question', sourceId: `comment_${item.id}`, threadId: item.threadId, threadTitle: item.threadId.replace(/^act:/, '').replace(/[-_]/g, ' '), author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
     ...contributions.filter((item) => item.itemLabel !== 'Admin review').map((item) => ({ kind: item.kind === 'link' ? 'group_information_request' : 'contribution', sourceId: `contribution_${item.id}`, threadId: null, threadTitle: null, author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
     ...tasks.map((item) => ({ kind: 'action_item', sourceId: `task_${item.id}`, threadId: null, threadTitle: null, author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
-    ...votes.map((item) => ({ kind: 'vote', sourceId: `vote_${item.id}`, threadId: null, threadTitle: null, author: item.authorName, title: item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() })),
+    ...votes.map((item) => {
+      const activityId = item.itemId.replace(/^activity:/, '')
+      const activity = ACTIVITIES.find((entry) => entry.id === activityId)
+      const decision = DECISIONS.find((entry) => `decision:${entry.id}` === item.itemId)
+      const concept = ISLAND_CONCEPTS.find((entry) => `concept:${entry.id}` === item.itemId)
+      return { kind: 'vote', sourceId: `vote_${item.id}`, threadId: activity ? `act:${activity.id}` : null, threadTitle: activity?.name ?? decision?.title ?? concept?.title ?? null, author: item.authorName, title: activity?.name ?? decision?.title ?? concept?.title ?? item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() }
+    }),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
-      <AdminReviewPanel items={reviewItems} />
+      <AdminReviewPanel items={reviewItems} activityCatalog={ACTIVITIES.map(({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }) => ({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }))} />
       <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} comments={comments.map((item) => ({ id: item.id, threadId: item.threadId, body: item.body, authorName: item.authorName }))} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
