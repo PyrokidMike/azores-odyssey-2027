@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Clipboard, Check, Save, Sparkles } from 'lucide-react'
 import { saveReviewReport } from '@/app/actions/trip-hub'
 
-type ReviewItem = { kind: string; sourceId: string; threadId: string | null; threadTitle: string | null; author?: string; title: string; detail: string; createdAt: string }
+type ReviewItem = { kind: string; sourceId: string; threadId: string | null; threadTitle: string | null; author?: string; title: string; detail: string; choice?: string; researchStatus?: string; answeredAt?: string | null; latestAnswerId?: string | null; createdAt: string }
 type ActivityCatalogItem = { id: string; name: string; islands: string[]; groupFit: string; fitNote: string; intensity: string; notes: string; urgency: string; status: string; link: string }
 
 function firstNameOnly(name?: string) {
@@ -39,6 +39,10 @@ export function AdminReviewPanel({ items, activityCatalog }: { items: ReviewItem
       author: firstNameOnly(item.author),
       type: item.kind,
       text: item.detail,
+      choice: item.choice ?? null,
+      researchStatus: item.researchStatus ?? (item.kind === 'visitor_question' ? 'pending' : item.kind === 'agent_response' ? 'answered' : item.kind === 'visitor_comment' ? 'not_a_question' : null),
+      answeredAt: item.answeredAt ?? null,
+      latestAnswerId: item.latestAnswerId ?? null,
       createdAt: item.createdAt,
     })),
   }
@@ -65,8 +69,11 @@ Interpretation rules:
 OUTPUT CONTRACT — return ONE JSON object, and nothing else. No prose, no Markdown, no code fences.
 
 Rules for alignment:
-- For every item with type visitor_question, produce one visitorReplies entry when an answer is appropriate. Copy sourceId, threadId, threadTitle, author, and text EXACTLY from that packet item; use them as questionAuthor and questionText. Put your answer in responseText.
-- Votes are already linked when threadId is present. Interpret must/interested/skip/no only in the context of that exact threadTitle. Never detach or relink a vote.
+- Research only items with type visitor_question and researchStatus pending. Do not answer agent_response, visitor_comment, vote, contribution, or action_item records.
+- For every pending visitor_question, produce one visitorReplies entry when an answer is appropriate. Copy sourceId, threadId, threadTitle, author, and text EXACTLY from that packet item; use them as questionAuthor and questionText. Put your answer in responseText.
+- If a visitor_question already has a matching agent_response in the same thread, mark it as answered in unalignedItems or omit it from visitorReplies rather than creating a duplicate.
+- Canonical IDs are mandatory: activities use act:<activity-slug>; itinerary decisions use dec:<decision-slug>. Votes include their exact threadId/threadTitle when linked. Interpret must/interested/skip/no only in the context of that exact threadTitle. Never detach or relink a vote.
+- A vote with no exact threadId is an unresolved data-quality item; report it in groupInformationRequests and do not infer its destination.
 - Use tripFacts, knownConstraints, and the activities catalog as the review context. Activity entries include provider link, islands/location, group fit, fit notes, intensity, urgency, research status, and curated notes. Do not invent missing age, height, weight, group-size, weather, or date facts; flag them in groupInformationRequests or linkChecks.
 - NEVER invent, guess, or word-match a threadId. If you cannot tie an answer to an exact packet item, put it in unalignedItems instead.
 - Put operational facts the group must decide/provide (that are not a direct reply to a thread question) in groupInformationRequests.

@@ -30,15 +30,22 @@ export default async function AdminPage() {
   const recentReviews = contributions.filter((item) => item.itemLabel === 'Admin review').slice(0, 5)
   const lastReviewAt = recentReviews[0]?.createdAt.getTime() ?? 0
   const reviewItems = [
-    ...comments.map((item) => ({ kind: 'visitor_question', sourceId: `comment_${item.id}`, threadId: item.threadId, threadTitle: item.threadId.replace(/^act:/, '').replace(/[-_]/g, ' '), author: item.authorName, title: item.threadId, detail: item.body, createdAt: item.createdAt.toISOString() })),
+    ...comments.map((item) => {
+      const isAgentResponse = item.authorName.trim().toLowerCase() === 'agent max'
+      const isQuestion = /\?|^(who|what|where|when|why|how|can|could|does|do|is|are|will|would|should)\b/i.test(item.body.trim())
+      const normalizedThreadId = item.threadId === 'act:canyoning-cabrito' && /caldeir(?:õ|o)es|age 6|120 cm|20 kg/i.test(item.body) ? 'act:canyoning-caldeiroes' : item.threadId
+      const activity = ACTIVITIES.find((entry) => `act:${entry.id}` === normalizedThreadId)
+      return { kind: isAgentResponse ? 'agent_response' : isQuestion ? 'visitor_question' : 'visitor_comment', sourceId: `comment_${item.id}`, threadId: normalizedThreadId, threadTitle: activity?.name ?? normalizedThreadId, author: item.authorName, title: activity?.name ?? normalizedThreadId, detail: item.body, researchStatus: isAgentResponse ? 'answered' : isQuestion ? 'pending' : 'not_a_question', answeredAt: isAgentResponse ? item.createdAt.toISOString() : null, latestAnswerId: isAgentResponse ? `comment_${item.id}` : null, createdAt: item.createdAt.toISOString() }
+    }),
     ...contributions.filter((item) => item.itemLabel !== 'Admin review').map((item) => ({ kind: item.kind === 'link' ? 'group_information_request' : 'contribution', sourceId: `contribution_${item.id}`, threadId: null, threadTitle: null, author: item.authorName, title: item.title ?? item.itemLabel ?? item.kind, detail: item.body ?? item.photoPathname ?? 'Added to the workspace', createdAt: item.createdAt.toISOString() })),
     ...tasks.map((item) => ({ kind: 'action_item', sourceId: `task_${item.id}`, threadId: null, threadTitle: null, author: item.creatorName, title: item.title, detail: `${item.status} · ${item.detail ?? 'Follow-up task'}`, createdAt: item.createdAt.toISOString() })),
     ...votes.map((item) => {
       const activityId = item.itemId.replace(/^activity:/, '')
       const activity = ACTIVITIES.find((entry) => entry.id === activityId)
-      const decision = DECISIONS.find((entry) => `decision:${entry.id}` === item.itemId)
-      const concept = ISLAND_CONCEPTS.find((entry) => `concept:${entry.id}` === item.itemId)
-      return { kind: 'vote', sourceId: `vote_${item.id}`, threadId: activity ? `act:${activity.id}` : null, threadTitle: activity?.name ?? decision?.title ?? concept?.title ?? null, author: item.authorName, title: activity?.name ?? decision?.title ?? concept?.title ?? item.itemId, detail: `Choice: ${item.choice}`, createdAt: item.updatedAt.toISOString() }
+      const decision = DECISIONS.find((entry) => item.itemId === `decision:${entry.id}` || item.itemId === `dec:${entry.id}`)
+      const concept = ISLAND_CONCEPTS.find((entry) => item.itemId === `concept:${entry.id}` || item.itemId === `dec:${entry.id}`)
+      const threadId = activity ? `act:${activity.id}` : decision ? `dec:${decision.id}` : concept ? `dec:${concept.id}` : null
+      return { kind: 'vote', sourceId: `vote_${item.id}`, threadId, threadTitle: activity?.name ?? decision?.title ?? concept?.title ?? null, author: item.authorName, title: activity?.name ?? decision?.title ?? concept?.title ?? item.itemId, detail: `Choice: ${item.choice}`, choice: item.choice, createdAt: item.updatedAt.toISOString() }
     }),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
