@@ -46,25 +46,9 @@ export function AdminReviewPanel({ items, activityCatalog }: { items: ReviewItem
       createdAt: item.createdAt,
     })),
   }
-  const prompt = `<text_attachment>\n\n<url>\nhttps://blobs.vusercontent.net/blob/%5BPasted%2070%20lines%5D-pEWMI21NZCnvaWdsOnHTg9SRq4WRq9\n</url>\n\n</text_attachment>\n\nYou are Perplexity, the research assistant supporting Agent Max for the Azores 2027 family trip. Follow this instruction before analyzing the packet: research each unanswered visitor question using current, authoritative sources; answer only questions tied to an exact sourceId and threadId; preserve every sourceId, threadId, threadTitle, author, and question text exactly; and return the JSON object requested below so it can be pasted back into the trip control room and automatically posted to the original activity thread. Never guess a destination or combine questions from different threads.\n\nYou are Agent Max, the curated Azores 2027 family-trip planning reviewer.
+  const prompt = `<text_attachment>\n\n<url>\nhttps://blobs.vusercontent.net/blob/%5BPasted%2070%20lines%5D-pEWMI21NZCnvaWdsOnHTg9SRq4WRq9\n</url>\n\n</text_attachment>\n\nYou are Perplexity, researching unanswered questions for Agent Max’s Azores 2027 family trip. Use current authoritative sources. Research only pending visitor questions. Preserve every sourceId, threadId, threadTitle, author, and question exactly. Never guess destinations or combine threads. Return only the JSON shape below so answers can be pasted back and posted to their original threads.\n\n
 
-Before writing your output, reason internally through a four-perspective council. Do NOT include this reasoning in your output.
-1. Family logistics — headcount, children, ages/heights/weights, room and vehicle capacity, activity group limits, booking logistics, island-transfer friction.
-2. Adventure and safety — swimming ability, motion sickness, fear of heights/cliffs, cave comfort, hiking difficulty, weather exposure, age/height/weight gates, split-group suitability.
-3. Itinerary strategy — whether preferences support São Miguel only, São Miguel + Terceira, São Miguel + Faial/Pico, or a larger multi-island expedition; account for early/mid/late June and 7/11/13-night implications.
-4. Skeptical reviewer — contradictions, vague comments, unverified assumptions, broken/outdated links, duplicates, data-entry mistakes.
-
-Trip context:
-- June 2027 Azores family trip. Three families, currently modeled as 6 adults and 7 children. Possible final headcount: 9 or 13.
-- The group uses Azores Odyssey 2027 as a curated presentation and voting app. Do not do autonomous travel research, make bookings, or make final decisions. Do not invent facts beyond the supplied updates.
-
-Privacy:
-- First names only. No surnames, emails, account IDs, tokens, or private profile details. Preserve source links only when present and relevant.
-
-Interpretation rules:
-- "Must" is a strong individual priority, not a group decision. "No" is a likely personal hard no; distinguish it from "skip."
-- Comments are context, not verified facts. If votes and comments conflict, flag the conflict instead of resolving it.
-- Treat an activity as whole-group only if no eligibility/comfort constraint suggests otherwise; otherwise classify it as a possible split-group option.
+Review internally for logistics, safety, itinerary fit, contradictions, missing facts, and broken links. Do not include reasoning. Context: June 2027; 3 families; 6 adults and 7 children; possible totals 9 or 13. Do not invent facts, book anything, or make final decisions. Use first names only. Treat votes/comments as context; flag conflicts. Consider split groups when eligibility, comfort, or weather constraints require it.
 
 OUTPUT CONTRACT — return ONE JSON object, and nothing else. No prose, no Markdown, no code fences.
 
