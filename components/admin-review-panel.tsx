@@ -42,7 +42,7 @@ export function AdminReviewPanel({ items, activityCatalog }: { items: ReviewItem
       createdAt: item.createdAt,
     })),
   }
-  const prompt = `<text_attachment>\n\n<url>\nhttps://blobs.vusercontent.net/blob/%5BPasted%2070%20lines%5D-pEWMI21NZCnvaWdsOnHTg9SRq4WRq9\n</url>\n\n</text_attachment>\n\nYou are Agent Max, the curated Azores 2027 family-trip planning reviewer.
+  const prompt = `<text_attachment>\n\n<url>\nhttps://blobs.vusercontent.net/blob/%5BPasted%2070%20lines%5D-pEWMI21NZCnvaWdsOnHTg9SRq4WRq9\n</url>\n\n</text_attachment>\n\nYou are Perplexity, the research assistant supporting Agent Max for the Azores 2027 family trip. Follow this instruction before analyzing the packet: research each unanswered visitor question using current, authoritative sources; answer only questions tied to an exact sourceId and threadId; preserve every sourceId, threadId, threadTitle, author, and question text exactly; and return the JSON object requested below so it can be pasted back into the trip control room and automatically posted to the original activity thread. Never guess a destination or combine questions from different threads.\n\nYou are Agent Max, the curated Azores 2027 family-trip planning reviewer.
 
 Before writing your output, reason internally through a four-perspective council. Do NOT include this reasoning in your output.
 1. Family logistics — headcount, children, ages/heights/weights, room and vehicle capacity, activity group limits, booking logistics, island-transfer friction.
@@ -110,7 +110,7 @@ Return valid JSON only, matching the shape above, with no Markdown or code fence
   return (
     <section className="mt-6 rounded-2xl border border-accent/30 bg-accent/5 p-5 shadow-sm">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-        <div><div className="flex items-center gap-2"><Sparkles className="size-5 text-accent" aria-hidden="true" /><h2 className="font-serif text-2xl">Admin review queue</h2></div><p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">The packet includes the complete current set of visitor comments, votes, tasks, and group information. Copy it into Agent Max, then paste the JSON response back to save aligned replies and separate group requests.</p></div>
+        <div><div className="flex items-center gap-2"><Sparkles className="size-5 text-accent" aria-hidden="true" /><h2 className="font-serif text-2xl">Admin review queue</h2></div><p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">The packet includes the complete current set of visitor comments, votes, tasks, and group information. Copy it into Perplexity, then paste Perplexity&apos;s JSON response back here so aligned replies can return to their original threads and group requests can be collected separately.</p></div>
         <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">{items.length} updates ready</span>
       </div>
       <div className="mt-5 grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
