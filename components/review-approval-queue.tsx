@@ -155,7 +155,9 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
   }, [reviews, comments, appliedIds])
 
   const pending = items.filter((item) => item.status === 'pending' && !appliedIds.has(item.id))
-  const grouped = useMemo(() => sections.map((section) => ({ ...section, entries: pending.filter((item) => item.category === section.key) })), [pending])
+  const legacyItems = pending.filter((item) => item.id.endsWith('-legacy'))
+  const actionablePending = pending.filter((item) => !item.id.endsWith('-legacy'))
+  const grouped = useMemo(() => sections.map((section) => ({ ...section, entries: actionablePending.filter((item) => item.category === section.key) })), [actionablePending])
 
   function updateItem(id: string, text: string) {
     setItems((current) => current.map((item) => (item.id === id ? { ...item, text } : item)))
@@ -214,6 +216,20 @@ export function ReviewApprovalQueue({ reviews, comments }: { reviews: Review[]; 
         <p className="mt-4 rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">All caught up — no pending findings to apply.</p>
       ) : (
         <div className="mt-5 space-y-6">
+          {legacyItems.length > 0 && (
+            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-foreground">{legacyItems.length} older reviews need regeneration</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">These saved reviews use the retired text/Markdown format. They are grouped here because they cannot be safely aligned to an activity thread. Use the current Copy Prompt, run it through Perplexity, and paste the JSON response back here.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button type="button" onClick={() => setAppliedIds((current) => new Set([...current, ...legacyItems.map((item) => item.id)]))} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted">Dismiss old reviews</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {grouped.map((section) => section.entries.length > 0 && (
             <div key={section.key}>
               <div className="flex items-center gap-2">
