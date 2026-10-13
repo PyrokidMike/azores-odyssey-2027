@@ -10,6 +10,11 @@ test('complete canonical property keeps every KPI row', () => {
   assert.equal(KPI_ROWS.length > 20, true)
   assert.equal(renderKpi(getKpi(kpis, 'capacity.maximumGuests')), '13')
   assert.equal((getKpi(kpis, 'distances.beach') as { status?: string }).status, 'available')
+  const airportDriveTime = { status: 'available' as const, durationMinutes: 24, travelMode: 'driving' as const, destination: 'Ponta Delgada Airport' }
+  const imported = normalizeKpis({ distances: { airport: { status: 'available', value: '18 km' }, airportDriveTime } })
+  assert.equal((getKpi(imported, 'distances.airportDriveTime') as { durationMinutes?: number }).durationMinutes, 24)
+  assert.equal(KPI_ROWS.some(([label, path]) => label === 'Distance to airport' && path === 'distances.airport'), true)
+  assert.equal(KPI_ROWS.some(([label, path]) => label === 'Drive time from airport' && path === 'distances.airportDriveTime'), true)
 })
 
 test('missing canonical values render not verified', () => {
