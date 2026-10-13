@@ -10,7 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "test": "node --test --experimental-strip-types tests/accommodation-import.test.ts tests/canonical-accommodation-kpis.test.ts"
+    "test": "node --test --experimental-strip-types tests/accommodation-import.test.ts tests/canonical-accommodation-kpis.test.ts tests/accommodation-bedroom-import.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
