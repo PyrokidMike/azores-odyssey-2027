@@ -52,6 +52,7 @@ export default async function AdminPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
+      <section className="mb-6 rounded-2xl border border-border bg-card p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-serif text-2xl">Accommodation research</h2><p className="mt-1 text-sm text-muted-foreground">Review submissions, update research status, and manage the shared property catalogue.</p></div><Link className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" href="/accommodation">Open accommodation</Link></div></section>
       <AdminReviewPanel items={reviewItems} activityCatalog={ACTIVITIES.map(({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }) => ({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }))} />
       <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} comments={comments.map((item) => ({ id: item.id, threadId: item.threadId, body: item.body, authorName: item.authorName }))} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
