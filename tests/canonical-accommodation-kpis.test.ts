@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+// @ts-expect-error Node's strip-types runner resolves the explicit TypeScript extension.
 import { KPI_ROWS, emptyKpis, getKpi, normalizeKpis, renderKpi } from '../lib/accommodation-kpis.ts'
 
 test('complete canonical property keeps every KPI row', () => {
