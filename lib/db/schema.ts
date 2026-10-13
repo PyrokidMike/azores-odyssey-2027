@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, serial, integer, unique } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, boolean, serial, integer, unique, jsonb, index } from 'drizzle-orm/pg-core'
 
 // --- Better Auth required tables -------------------------------------------
 // Column names are camelCase to match Better Auth's defaults. Do not rename.
@@ -129,6 +129,22 @@ export const activityProgress = pgTable(
     uniqueUserActivity: unique('activity_progress_user_activity_unique').on(t.userId, t.activityId),
   }),
 )
+
+export const accommodation = pgTable('accommodation', {
+  id: serial('id').primaryKey(), name: text('name').notNull(), slug: text('slug').notNull().unique(), sourceUrl: text('sourceUrl').notNull(), sourceDomain: text('sourceDomain'), location: text('location'), island: text('island').notNull().default('São Miguel'), summary: text('summary'), capacity: integer('capacity'), bedrooms: integer('bedrooms'), bathrooms: text('bathrooms'), bedConfiguration: text('bedConfiguration'), propertyType: text('propertyType'), amenities: jsonb('amenities').$type<Record<string, boolean | string[]>>().notNull().default({}), rating: text('rating'), reviewCount: integer('reviewCount'), reviewHighlights: text('reviewHighlights'), reviewConcerns: text('reviewConcerns'), agentMaxSummary: text('agentMaxSummary'), unresolvedQuestions: text('unresolvedQuestions'), status: text('status').notNull().default('submitted'), researchStatus: text('researchStatus').notNull().default('research-needed'), submittedByUserId: text('submittedByUserId').notNull(), submittedByName: text('submittedByName').notNull(), lastResearchedAt: timestamp('lastResearchedAt'), publishedAt: timestamp('publishedAt'), archivedAt: timestamp('archivedAt'), createdAt: timestamp('createdAt').notNull().defaultNow(), updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+}, (t) => ({ statusIdx: index('accommodation_status_idx').on(t.status), researchIdx: index('accommodation_research_status_idx').on(t.researchStatus), sourceIdx: index('accommodation_source_url_idx').on(t.sourceUrl) }))
+
+export const accommodationAvailability = pgTable('accommodation_availability', {
+  id: serial('id').primaryKey(), accommodationId: integer('accommodationId').notNull().references(() => accommodation.id, { onDelete: 'cascade' }), startDate: timestamp('startDate'), endDate: timestamp('endDate'), nights: integer('nights'), availability: text('availability').notNull().default('unknown'), currency: text('currency'), nightlyRate: text('nightlyRate'), fees: text('fees'), taxes: text('taxes'), totalPrice: text('totalPrice'), cancellationPolicy: text('cancellationPolicy'), sourceUrl: text('sourceUrl'), verificationMethod: text('verificationMethod').notNull().default('listing'), confidence: text('confidence').notNull().default('unconfirmed'), notes: text('notes'), checkedByUserId: text('checkedByUserId').notNull(), checkedByName: text('checkedByName').notNull(), checkedAt: timestamp('checkedAt').notNull().defaultNow(), createdAt: timestamp('createdAt').notNull().defaultNow(),
+}, (t) => ({ lookupIdx: index('accommodation_availability_lookup_idx').on(t.accommodationId, t.checkedAt) }))
+
+export const accommodationResearchNote = pgTable('accommodation_research_note', {
+  id: serial('id').primaryKey(), accommodationId: integer('accommodationId').notNull().references(() => accommodation.id, { onDelete: 'cascade' }), kind: text('kind').notNull().default('finding'), title: text('title'), body: text('body').notNull(), sourceUrl: text('sourceUrl'), createdByUserId: text('createdByUserId').notNull(), createdByName: text('createdByName').notNull(), isAgentMax: boolean('isAgentMax').notNull().default(false), createdAt: timestamp('createdAt').notNull().defaultNow(),
+}, (t) => ({ lookupIdx: index('accommodation_notes_lookup_idx').on(t.accommodationId, t.createdAt) }))
+
+export const accommodationRevision = pgTable('accommodation_revision', {
+  id: serial('id').primaryKey(), accommodationId: integer('accommodationId').notNull().references(() => accommodation.id, { onDelete: 'cascade' }), action: text('action').notNull(), beforeData: jsonb('beforeData'), afterData: jsonb('afterData'), actorUserId: text('actorUserId').notNull(), actorName: text('actorName').notNull(), createdAt: timestamp('createdAt').notNull().defaultNow(),
+}, (t) => ({ lookupIdx: index('accommodation_revisions_lookup_idx').on(t.accommodationId, t.createdAt) }))
 
 export const contribution = pgTable('contribution', {
   id: serial('id').primaryKey(),
