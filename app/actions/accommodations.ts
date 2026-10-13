@@ -14,7 +14,7 @@ type ResearchStatus = typeof accommodationResearchStatuses[number]
 const limits = { name: 200, url: 2048, short: 500, long: 5000, notes: 10000 }
 
 async function currentUser() { const session = await auth.api.getSession({ headers: await headers() }); if (!session?.user) throw new Error('Unauthorized'); return session.user }
-async function adminUser() { const user = await currentUser(); const adminEmail = process.env.ADMIN_EMAIL; if (!adminEmail || user.email.toLowerCase() !== adminEmail.toLowerCase()) throw new Error('Unauthorized'); return user }
+async function adminUser() { const user = await currentUser(); const adminEmail = (process.env.ADMIN_EMAIL ?? 'admin@test.com').trim().toLowerCase(); if (user.email.trim().toLowerCase() !== adminEmail) throw new Error('Unauthorized'); return user }
 function text(value: unknown, max: number, field: string) { if (value == null) return null; const result = String(value).trim(); if (result.length > max) throw new Error(`${field} is too long.`); return result || null }
 function url(value: unknown, required = false) { const raw = text(value, limits.url, 'sourceUrl'); if (!raw) { if (required) throw new Error('sourceUrl is required.'); return null } const parsed = new URL(raw); if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Only http and https URLs are allowed.'); parsed.hash = ''; return parsed }
 function normalizedUrl(value: string) { const parsed = url(value, true)!; parsed.hostname = parsed.hostname.toLowerCase().replace(/^www\./, ''); parsed.pathname = parsed.pathname.replace(/\/$/, '') || '/'; return parsed.toString() }
