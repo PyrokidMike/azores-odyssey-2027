@@ -144,6 +144,8 @@ export const accommodationResearchNote = pgTable('accommodation_research_note', 
   id: serial('id').primaryKey(), accommodationId: integer('accommodationId').notNull().references(() => accommodation.id, { onDelete: 'cascade' }), kind: text('kind').notNull().default('finding'), title: text('title'), body: text('body').notNull(), sourceUrl: text('sourceUrl'), createdByUserId: text('createdByUserId').notNull(), createdByName: text('createdByName').notNull(), isAgentMax: boolean('isAgentMax').notNull().default(false), createdAt: timestamp('createdAt').notNull().defaultNow(),
 }, (t) => ({ lookupIdx: index('accommodation_notes_lookup_idx').on(t.accommodationId, t.createdAt) }))
 
+export const accommodationImportBackup = pgTable('accommodation_import_backup', { id: integer('id').primaryKey().default(1), payload: jsonb('payload').notNull(), importedAt: timestamp('importedAt').notNull().defaultNow(), importedByUserId: text('importedByUserId').notNull(), importedByName: text('importedByName').notNull() })
+
 export const accommodationRevision = pgTable('accommodation_revision', {
   id: serial('id').primaryKey(), accommodationId: integer('accommodationId').notNull().references(() => accommodation.id, { onDelete: 'cascade' }), action: text('action').notNull(), beforeData: jsonb('beforeData'), afterData: jsonb('afterData'), actorUserId: text('actorUserId').notNull(), actorName: text('actorName').notNull(), createdAt: timestamp('createdAt').notNull().defaultNow(),
 }, (t) => ({ lookupIdx: index('accommodation_revisions_lookup_idx').on(t.accommodationId, t.createdAt) }))
