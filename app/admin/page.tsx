@@ -8,6 +8,8 @@ import { comment, contribution, task, vote } from '@/lib/db/schema'
 import { PageHeader } from '@/components/page-header'
 import { AdminReviewPanel } from '@/components/admin-review-panel'
 import { AdminCommentReply } from '@/components/admin-comment-reply'
+import { AccommodationAdmin } from '@/components/accommodation-admin'
+import { accommodation } from '@/lib/db/schema'
 import { ReviewApprovalQueue } from '@/components/review-approval-queue'
 import { SavedReviewList } from '@/components/saved-review-list'
 import { ACTIVITIES, DECISIONS, ISLAND_CONCEPTS } from '@/lib/trip-data'
@@ -17,11 +19,12 @@ export default async function AdminPage() {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) redirect('/sign-in')
   if (session.user.email.toLowerCase() !== (process.env.ADMIN_EMAIL ?? 'admin@test.com').toLowerCase()) redirect('/')
-  const [votes, comments, tasks, contributions] = await Promise.all([
+  const [votes, comments, tasks, contributions, accommodations] = await Promise.all([
     db.select().from(vote).orderBy(desc(vote.updatedAt)),
     db.select().from(comment).orderBy(desc(comment.createdAt)),
     db.select().from(task).orderBy(desc(task.createdAt)),
     db.select().from(contribution).orderBy(desc(contribution.createdAt)),
+    db.select().from(accommodation).orderBy(desc(accommodation.updatedAt)),
   ])
   const openTasks = tasks.filter((item) => item.status !== 'done')
   const recentVotes = votes.slice(0, 8)
@@ -53,6 +56,7 @@ export default async function AdminPage() {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <PageHeader eyebrow="Private admin" title="Trip control room" intro="A live summary of what the group has decided, what needs attention, and what people have added." />
       <section className="mb-6 rounded-2xl border border-border bg-card p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-serif text-2xl">Accommodation research</h2><p className="mt-1 text-sm text-muted-foreground">Review submissions, update research status, and manage the shared property catalogue.</p></div><Link className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" href="/accommodation">Open accommodation</Link></div></section>
+      <AccommodationAdmin properties={accommodations} />
       <AdminReviewPanel items={reviewItems} activityCatalog={ACTIVITIES.map(({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }) => ({ id, name, islands, groupFit, fitNote, intensity, notes, urgency, status, link }))} />
       <ReviewApprovalQueue reviews={recentReviews.map((item) => ({ id: item.id, createdAt: item.createdAt.toISOString(), body: item.body ?? '' }))} comments={comments.map((item) => ({ id: item.id, threadId: item.threadId, body: item.body, authorName: item.authorName }))} />
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
