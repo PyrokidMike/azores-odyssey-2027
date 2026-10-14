@@ -38,7 +38,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     <form onSubmit={submit} className="flex flex-col gap-4">
       {isSignUp && <label className="flex flex-col gap-2 text-sm">Name<input required value={name} onChange={(e) => setName(e.target.value)} className="min-h-11 rounded-md border border-border bg-background px-3 text-base" autoComplete="name" /></label>}
       <label className="flex flex-col gap-2 text-sm">Email<input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="min-h-11 rounded-md border border-border bg-background px-3 text-base" autoComplete="email" /></label>
-      <label className="flex flex-col gap-2 text-sm">Password<input required minLength={8} type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="min-h-11 rounded-md border border-border bg-background px-3 text-base" autoComplete={isSignUp ? 'new-password' : 'current-password'} /></label>
+      <label className="flex flex-col gap-2 text-sm">Password<input required minLength={4} type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="min-h-11 rounded-md border border-border bg-background px-3 text-base" autoComplete={isSignUp ? 'new-password' : 'current-password'} /></label>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <button disabled={pending} className="min-h-11 rounded-md bg-primary px-4 font-medium text-primary-foreground disabled:opacity-60">{pending ? 'Working…' : isSignUp ? 'Create account' : 'Sign in'}</button>
     </form>
